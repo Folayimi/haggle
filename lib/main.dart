@@ -1,11 +1,14 @@
-import 'package:haggle/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:haggle/app/controllers/theme_controller.dart';
+import 'package:haggle/app/routes/app_pages.dart';
+import 'package:haggle/app/theme/app_theme.dart';
+
 Future<void> main() async {
-  _initializeApp();
+  await _initializeApp();
   runApp(const MyApp());
 }
 
@@ -13,6 +16,7 @@ Future<void> _initializeApp() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await GetStorage.init();
+    Get.put(ThemeController(), permanent: true);
     debugPrint('App Initialized Successfully');
   } catch (e) {
     debugPrint('App not Initialized: error $e');
@@ -42,12 +46,12 @@ String _getInitialRoute() {
     // Check camera permission in background
     // checkCameraPermission();
 
-    return Routes.ONBOARDING;
+    return Routes.DASHBOARD;
   } else {
     if (isLoggedIn) {
-      return Routes.ONBOARDING;
+      return Routes.DASHBOARD;
     } else {
-      return Routes.ONBOARDING;
+      return Routes.DASHBOARD;
     }
   }
 }
@@ -58,17 +62,18 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Haggle',
-      theme: ThemeData(
-        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    final themeController = Get.find<ThemeController>();
+    return Obx(
+      () => GetMaterialApp(
+        title: 'Haggle',
+        theme: AppTheme.lightTheme(GoogleFonts.spaceGroteskTextTheme()),
+        darkTheme: AppTheme.darkTheme(GoogleFonts.spaceGroteskTextTheme()),
+        themeMode: themeController.themeMode,
+        initialRoute: _getInitialRoute(),
+        getPages: AppPages.routes,
+        debugShowCheckedModeBanner: false,
+        defaultTransition: Transition.fade, // Optional: Add GetX transition
       ),
-      initialRoute: _getInitialRoute(),
-      getPages: AppPages.routes,
-      debugShowCheckedModeBanner: false,
-      defaultTransition: Transition.fade, // Optional: Add GetX transition
     );
   }
 }
