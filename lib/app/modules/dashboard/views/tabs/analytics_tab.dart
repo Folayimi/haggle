@@ -5,6 +5,7 @@ import '../../../../widgets/circle_icon_button.dart';
 import '../../../../widgets/haggle_card.dart';
 import '../../../../widgets/info_tile.dart';
 import '../../../../widgets/section_header.dart';
+import '../../../../widgets/trust_card.dart';
 
 class AnalyticsTab extends StatelessWidget {
   const AnalyticsTab({super.key, required this.onMenuTap});
@@ -73,13 +74,13 @@ class AnalyticsTab extends StatelessWidget {
         const SizedBox(height: 18),
         const SectionHeader(title: 'Trust and Safety'),
         const SizedBox(height: 12),
-        const _TrustCard(
+        const TrustCard(
           title: 'Verified buyers',
           value: '86%',
           subtitle: 'Last 30 days',
         ),
         const SizedBox(height: 12),
-        const _TrustCard(
+        const TrustCard(
           title: 'Disputes resolved',
           value: '96%',
           subtitle: 'Calm closures',
@@ -91,48 +92,4 @@ class AnalyticsTab extends StatelessWidget {
 
 // CircleIconButton and InfoTile live in widgets.
 
-class _TrustCard extends StatelessWidget {
-  const _TrustCard({required this.title, required this.value, required this.subtitle});
-
-  final String title;
-  final String value;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.neutral),
-      ),
-      child: Row(
-        children: [
-          Container(
-            height: 46,
-            width: 46,
-            decoration: BoxDecoration(
-              color: AppColors.success.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Icon(Icons.verified_user_outlined, color: AppColors.success),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                const SizedBox(height: 4),
-                Text(subtitle, style: theme.textTheme.labelSmall?.copyWith(color: AppColors.dark.withOpacity(0.6))),
-              ],
-            ),
-          ),
-          Text(value, style: theme.textTheme.titleMedium?.copyWith(color: AppColors.success)),
-        ],
-      ),
-    );
-  }
-}
+// TrustCard moved to widgets.

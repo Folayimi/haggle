@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../theme/app_colors.dart';
 import '../../../../widgets/circle_icon_button.dart';
+import '../../../../widgets/atmosphere_pill.dart';
 import '../../../../widgets/haggle_button.dart';
 import '../../../../widgets/haggle_card.dart';
 import '../../../../widgets/info_tile.dart';
@@ -69,11 +70,11 @@ class CreateTab extends StatelessWidget {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: const [
-              _AtmospherePill(title: 'Marketplace', subtitle: 'Energetic'),
+              AtmospherePill(title: 'Marketplace', subtitle: 'Energetic'),
               SizedBox(width: 10),
-              _AtmospherePill(title: 'Boutique', subtitle: 'Calm'),
+              AtmospherePill(title: 'Boutique', subtitle: 'Calm'),
               SizedBox(width: 10),
-              _AtmospherePill(title: 'Workshop', subtitle: 'Authentic'),
+              AtmospherePill(title: 'Workshop', subtitle: 'Authentic'),
             ],
           ),
         ),
@@ -105,33 +106,4 @@ class CreateTab extends StatelessWidget {
 
 // CircleIconButton and InfoTile live in widgets.
 
-class _AtmospherePill extends StatelessWidget {
-  const _AtmospherePill({required this.title, required this.subtitle});
-
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      width: 160,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.accent,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.neutral),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.storefront_outlined, color: AppColors.secondary),
-          const Spacer(),
-          Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 4),
-          Text(subtitle, style: theme.textTheme.labelSmall?.copyWith(color: AppColors.dark.withOpacity(0.6))),
-        ],
-      ),
-    );
-  }
-}
+// AtmospherePill moved to widgets.

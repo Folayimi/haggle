@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../theme/app_colors.dart';
+import '../../../../widgets/active_chip.dart';
 import '../../../../widgets/circle_icon_button.dart';
+import '../../../../widgets/conversation_tile.dart';
 import '../../../../widgets/section_header.dart';
 import '../../../../widgets/spotlight_card.dart';
 import '../../../../widgets/story_bubble.dart';
@@ -93,19 +95,35 @@ class MessageTab extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 18),        
+        const SizedBox(height: 18),
+        const SectionHeader(title: 'Active Haggles'),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 86,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: const [
+              ActiveChip(label: 'Live Now', value: '4'),
+              SizedBox(width: 10),
+              ActiveChip(label: 'Waiting Reply', value: '7'),
+              SizedBox(width: 10),
+              ActiveChip(label: 'Scheduled', value: '3'),
+            ],
+          ),
+        ),
+        const SizedBox(height: 18),
         const SectionHeader(title: 'Conversations'),
         const SizedBox(height: 12),
-        const _ConversationTile(
+        const ConversationTile(
           name: 'Fola Studios',
-          message: 'Can we close at ₦42k if pickup is today?',
+          message: 'Can we close at NGN 42k if pickup is today?',
           time: '2m',
           unread: 2,
           avatarUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/74/Portrait_%28Unsplash%29.jpg',
-          status: 'Live • 3:12 left',
+          status: 'Live | 3:12 left',
         ),
         const SizedBox(height: 12),
-        const _ConversationTile(
+        const ConversationTile(
           name: 'Kola Kicks',
           message: 'Counteroffer sent. Waiting for your response.',
           time: '18m',
@@ -115,7 +133,7 @@ class MessageTab extends StatelessWidget {
           status: 'Ends in 20m',
         ),
         const SizedBox(height: 12),
-        const _ConversationTile(
+        const ConversationTile(
           name: 'Cora Studios',
           message: 'Next session is scheduled for 6:00 PM.',
           time: '1h',
@@ -125,7 +143,7 @@ class MessageTab extends StatelessWidget {
           status: 'Scheduled',
         ),
         const SizedBox(height: 12),
-        const _ConversationTile(
+        const ConversationTile(
           name: 'Budiarti',
           message: 'Offer accepted. Proceed to payment when ready.',
           time: '2h',
@@ -134,112 +152,6 @@ class MessageTab extends StatelessWidget {
           status: 'Deal won',
         ),
       ],
-    );
-  }
-}
-
-class _ActiveChip extends StatelessWidget {
-  const _ActiveChip({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.neutral),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(value, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 4),
-          Text(label, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppColors.dark.withOpacity(0.6))),
-        ],
-      ),
-    );
-  }
-}
-
-class _ConversationTile extends StatelessWidget {
-  const _ConversationTile({
-    required this.name,
-    required this.message,
-    required this.time,
-    required this.unread,
-    required this.avatarUrl,
-    required this.status,
-  });
-
-  final String name;
-  final String message;
-  final String time;
-  final int unread;
-  final String avatarUrl;
-  final String status;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.neutral),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: AppColors.accent,
-            backgroundImage: NetworkImage(avatarUrl),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        name,
-                        style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                    Text(time, style: theme.textTheme.labelSmall?.copyWith(color: AppColors.dark.withOpacity(0.6))),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(message, style: theme.textTheme.bodySmall),
-                const SizedBox(height: 8),
-                Text(status, style: theme.textTheme.labelSmall?.copyWith(color: AppColors.primary)),
-              ],
-            ),
-          ),
-          if (unread > 0) ...[
-            const SizedBox(width: 10),
-            Container(
-              height: 24,
-              width: 24,
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                unread.toString(),
-                style: theme.textTheme.labelSmall?.copyWith(color: Colors.white),
-              ),
-            ),
-          ],
-        ],
-      ),
     );
   }
 }

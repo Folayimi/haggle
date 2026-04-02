@@ -7,7 +7,9 @@ import '../../../../widgets/haggle_button.dart';
 import '../../../../widgets/haggle_card.dart';
 import '../../../../widgets/info_tile.dart';
 import '../../../../widgets/mic_button.dart';
+import '../../../../widgets/note_card.dart';
 import '../../../../widgets/section_header.dart';
+import '../../../../widgets/status_pill.dart';
 
 class NegotiateTab extends StatelessWidget {
   const NegotiateTab({super.key, required this.onMenuTap});
@@ -36,7 +38,7 @@ class NegotiateTab extends StatelessWidget {
                 ],
               ),
             ),
-            _StatusPill(label: 'Live', color: AppColors.primary),
+            StatusPill(label: 'Live', color: AppColors.primary),
           ],
         ),
         const SizedBox(height: 18),
@@ -98,7 +100,7 @@ class NegotiateTab extends StatelessWidget {
         const SizedBox(height: 18),
         const SectionHeader(title: 'Conversation Notes'),
         const SizedBox(height: 12),
-        const _NoteCard(
+        const NoteCard(
           title: 'Buyer mood',
           body: 'Open to quick close if delivery is included.',
         ),
@@ -107,52 +109,4 @@ class NegotiateTab extends StatelessWidget {
   }
 }
 
-class _StatusPill extends StatelessWidget {
-  const _StatusPill({required this.label, required this.color});
-
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppColors.accent),
-      ),
-    );
-  }
-}
-
-class _NoteCard extends StatelessWidget {
-  const _NoteCard({required this.title, required this.body});
-
-  final String title;
-  final String body;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.neutral),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: theme.textTheme.labelMedium?.copyWith(color: AppColors.dark.withOpacity(0.6))),
-          const SizedBox(height: 8),
-          Text(body, style: theme.textTheme.bodySmall),
-        ],
-      ),
-    );
-  }
-}
+// StatusPill and NoteCard moved to widgets.

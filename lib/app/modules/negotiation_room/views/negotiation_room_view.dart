@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import '../../../theme/app_colors.dart';
 import '../../../widgets/haggle_button.dart';
 import '../../../widgets/haggle_card.dart';
-import '../../../widgets/mic_button.dart';
+import '../../../widgets/meeting_control_button.dart';
+import '../../../widgets/meeting_participant_grid.dart';
+import '../../../widgets/meeting_video_tile.dart';
 import '../../../widgets/offer_stepper.dart';
 import '../../../widgets/price_tag.dart';
-import '../../../widgets/section_header.dart';
 import '../../../widgets/timer_pill.dart';
+import '../../../widgets/meeting_voice_only_stage.dart';
 import '../controllers/negotiation_room_controller.dart';
 
 class NegotiationRoomView extends GetView<NegotiationRoomController> {
@@ -18,165 +20,195 @@ class NegotiationRoomView extends GetView<NegotiationRoomController> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () => Get.back(),
-        ),
-        title: const Text('Negotiation Room'),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: Colors.white,
-              child: Icon(Icons.storefront_outlined, color: AppColors.dark),
+      backgroundColor: AppColors.dark,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left, color: Colors.white),
+                    onPressed: () => Get.back(),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Negotiation Room',
+                    style: theme.textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
+                  ),
+                  const Spacer(),
+                  const TimerPill(label: '02:18 left'),
+                  const SizedBox(width: 8),
+                  Obx(
+                    () => MeetingControlButton(
+                      icon: controller.isGridView.value ? Icons.grid_view : Icons.view_agenda_outlined,
+                      label: controller.isGridView.value ? 'Grid' : 'Focus',
+                      isActive: controller.isGridView.value,
+                      onTap: controller.toggleGrid,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      'Live',
+                      style: theme.textTheme.labelSmall?.copyWith(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-        children: [
-          HaggleCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Live: Botanica Rose Lamp',
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 6),
-                Text('Seller: Nathan Rusl', style: theme.textTheme.labelMedium),
-                const SizedBox(height: 12),
-                Row(
-                  children: const [
-                    TimerPill(label: '02:18 left'),
-                    SizedBox(width: 10),
-                    _RoomStatus(label: 'Voice ready'),
+            Expanded(
+              child: Obx(
+                () => Stack(
+                  children: [
+                    Positioned.fill(
+                      child: controller.isVoiceOnly.value
+                          ? const MeetingVoiceOnlyStage()
+                              : controller.isGridView.value
+                                  ? const MeetingParticipantGrid()
+                                  : MeetingVideoTile(
+                                      imageUrl:
+                                          'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Portrait_of_a_woman_%28Unsplash%29.jpg/960px-Portrait_of_a_woman_%28Unsplash%29.jpg',
+                                      name: 'Seller Live',
+                                      isMuted: false,
+                                      showAudioWave: true,
+                                    ),
+                    ),
+                    if (!controller.isVoiceOnly.value)
+                      Positioned(
+                        right: 16,
+                        bottom: 16,
+                        child: SizedBox(
+                          height: 140,
+                          width: 100,
+                          child: MeetingVideoTile(
+                            imageUrl:
+                                'https://upload.wikimedia.org/wikipedia/commons/7/74/Portrait_%28Unsplash%29.jpg',
+                            name: 'You',
+                            isSelf: true,
+                            isMuted: controller.isMuted.value,
+                            borderRadius: 16,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          const SectionHeader(title: 'Voice Connection'),
-          const SizedBox(height: 12),
-          HaggleCard(
-            child: Row(
-              children: [
-                Obx(
-                  () => MicButton(
-                    isActive: !controller.isMuted.value,
-                    onPressed: controller.toggleMute,
+            Container(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+              decoration: BoxDecoration(
+                color: AppColors.dark,
+                border: Border(top: BorderSide(color: Colors.white.withOpacity(0.08))),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: HaggleCard(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Offer',
+                                style: theme.textTheme.labelMedium?.copyWith(color: Colors.white70),
+                              ),
+                              const SizedBox(height: 8),
+                              Obx(
+                                () => PriceTag(
+                                  amount: controller.currentOffer.value.toString(),
+                                  isEmphasis: true,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Obx(
+                                () => OfferStepper(
+                                  offer: controller.currentOffer.value,
+                                  onIncrease: controller.increaseOffer,
+                                  onDecrease: controller.decreaseOffer,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: HaggleCard(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Seller',
+                                style: theme.textTheme.labelMedium?.copyWith(color: Colors.white70),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Nathan Rusl',
+                                style: theme.textTheme.titleSmall?.copyWith(color: Colors.white),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                'Ready for voice',
+                                style: theme.textTheme.labelSmall?.copyWith(color: AppColors.success),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Tap the mic to speak directly to the seller.',
-                    style: theme.textTheme.bodySmall,
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Obx(
+                        () => MeetingControlButton(
+                          icon: controller.isMuted.value ? Icons.mic_off : Icons.mic,
+                          label: controller.isMuted.value ? 'Muted' : 'Mic',
+                          isActive: !controller.isMuted.value,
+                          onTap: controller.toggleMute,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Obx(
+                        () => MeetingControlButton(
+                          icon: controller.isVideoEnabled.value ? Icons.videocam : Icons.videocam_off,
+                          label: controller.isVideoEnabled.value ? 'Camera' : 'Camera off',
+                          isActive: controller.isVideoEnabled.value,
+                          onTap: controller.toggleVideo,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Obx(
+                        () => MeetingControlButton(
+                          icon: Icons.pan_tool_outlined,
+                          label: controller.isHandRaised.value ? 'Raised' : 'Raise hand',
+                          isActive: controller.isHandRaised.value,
+                          onTap: controller.toggleHand,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Obx(
+                        () => MeetingControlButton(
+                          icon: Icons.headset_mic_outlined,
+                          label: controller.isVoiceOnly.value ? 'Voice only' : 'Switch to voice',
+                          isActive: controller.isVoiceOnly.value,
+                          onTap: controller.toggleVoiceOnly,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Obx(
-                  () => _HandRaiseButton(
-                    isRaised: controller.isHandRaised.value,
-                    onTap: controller.toggleHand,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          const SectionHeader(title: 'Adjust Offer'),
-          const SizedBox(height: 12),
-          HaggleCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Obx(() => PriceTag(amount: controller.currentOffer.value.toString(), isEmphasis: true)),
-                const SizedBox(height: 12),
-                Obx(
-                  () => OfferStepper(
-                    offer: controller.currentOffer.value,
-                    onIncrease: controller.increaseOffer,
-                    onDecrease: controller.decreaseOffer,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                const HaggleButton(label: 'Send Offer', onPressed: null),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          const SectionHeader(title: 'Room Notes'),
-          const SizedBox(height: 12),
-          HaggleCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Seller tone: Calm and responsive', style: theme.textTheme.bodySmall),
-                const SizedBox(height: 6),
-                Text('Tip: Confident first offers get faster responses.', style: theme.textTheme.bodySmall),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RoomStatus extends StatelessWidget {
-  const _RoomStatus({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.success.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.success.withOpacity(0.6)),
-      ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppColors.success),
-      ),
-    );
-  }
-}
-
-class _HandRaiseButton extends StatelessWidget {
-  const _HandRaiseButton({required this.isRaised, required this.onTap});
-
-  final bool isRaised;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: isRaised ? AppColors.primary : Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.neutral),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.pan_tool_outlined, color: isRaised ? Colors.white : AppColors.dark, size: 18),
-            const SizedBox(width: 6),
-            Text(
-              isRaised ? 'Hand raised' : 'Raise hand',
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: isRaised ? Colors.white : AppColors.dark,
-                  ),
+                  const SizedBox(height: 10),
+                  const HaggleButton(label: 'Send Offer', onPressed: null),
+                ],
+              ),
             ),
           ],
         ),

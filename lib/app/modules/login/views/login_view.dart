@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_pages.dart';
+import '../../../widgets/auth_divider_label.dart';
 import '../../../widgets/auth_option_button.dart';
 import '../../../widgets/auth_scaffold.dart';
+import '../../../widgets/auth_tab_row.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
@@ -47,7 +49,7 @@ class LoginView extends GetView<LoginController> {
               ),
             ),
             const SizedBox(height: 16),
-            const _AuthTabRow(),
+            const AuthTabRow(),
             const SizedBox(height: 16),
             TextField(
               decoration: const InputDecoration(
@@ -75,7 +77,7 @@ class LoginView extends GetView<LoginController> {
               onPressed: () {},
             ),
             const SizedBox(height: 16),
-            _DividerLabel(text: 'or continue with'),
+            const AuthDividerLabel(text: 'or continue with'),
             const SizedBox(height: 16),
             AuthOptionButton(
               label: 'Continue with Google',
@@ -91,87 +93,6 @@ class LoginView extends GetView<LoginController> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _AuthTabRow extends StatelessWidget {
-  const _AuthTabRow();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      children: [
-        _AuthTab(label: 'Phone', isActive: true),
-        const SizedBox(width: 20),
-        _AuthTab(label: 'Email'),
-      ],
-    );
-  }
-}
-
-class _AuthTab extends StatelessWidget {
-  const _AuthTab({required this.label, this.isActive = false});
-
-  final String label;
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: isActive
-                ? theme.colorScheme.onSurface
-                : theme.colorScheme.onSurface.withOpacity(0.5),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 6),
-        Container(
-          height: 2,
-          width: 36,
-          color: isActive ? theme.colorScheme.onSurface : Colors.transparent,
-        ),
-      ],
-    );
-  }
-}
-
-class _DividerLabel extends StatelessWidget {
-  const _DividerLabel({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Divider(
-            color: Theme.of(context).dividerColor.withOpacity(0.2),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Divider(
-            color: Theme.of(context).dividerColor.withOpacity(0.2),
-          ),
-        ),
-      ],
     );
   }
 }
