@@ -41,14 +41,7 @@ class SessionCard extends StatelessWidget {
                 Positioned.fill(
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          theme.colorScheme.surface.withOpacity(0.2),
-                        ],
-                      ),
+                      color: theme.colorScheme.surface.withOpacity(0.12),
                     ),
                   ),
                 ),

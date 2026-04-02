@@ -14,6 +14,21 @@ class SignupView extends StatelessWidget {
     return AuthScaffold(
       title: 'Sign up',
       subtitle: 'Create your Haggle ID and start negotiating live.',
+      bottom: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Already have an account?',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface.withOpacity(0.7),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Get.toNamed(Routes.LOGIN),
+            child: const Text('Sign in'),
+          ),
+        ],
+      ),
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
@@ -26,7 +41,9 @@ class SignupView extends StatelessWidget {
           children: [
             Text(
               'Create account',
-              style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.onSurface),
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
@@ -45,16 +62,12 @@ class SignupView extends StatelessWidget {
             const SizedBox(height: 12),
             TextField(
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
+              decoration: const InputDecoration(labelText: 'Password'),
             ),
             const SizedBox(height: 12),
             TextField(
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Confirm password',
-              ),
+              decoration: const InputDecoration(labelText: 'Confirm password'),
             ),
             const SizedBox(height: 14),
             AuthOptionButton(
@@ -80,21 +93,6 @@ class SignupView extends StatelessWidget {
           ],
         ),
       ),
-      bottom: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Already have an account?',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Get.toNamed(Routes.LOGIN),
-            child: const Text('Sign in'),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -108,17 +106,25 @@ class _DividerLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: Divider(color: Theme.of(context).dividerColor.withOpacity(0.2))),
+        Expanded(
+          child: Divider(
+            color: Theme.of(context).dividerColor.withOpacity(0.2),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
             text,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                ),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+            ),
           ),
         ),
-        Expanded(child: Divider(color: Theme.of(context).dividerColor.withOpacity(0.2))),
+        Expanded(
+          child: Divider(
+            color: Theme.of(context).dividerColor.withOpacity(0.2),
+          ),
+        ),
       ],
     );
   }

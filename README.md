@@ -412,13 +412,13 @@ POST /api/webrtc/ice-candidate - Submit ICE candidate
 UI/UX Guidelines
 Color Palette
 
-Primary: #FF6B4A (Warm Orange)
+Primary: #F44D24 (Warm Orange)
 Secondary: #6B4EFF (Deep Purple)
-Accent: #FFB347 (Golden Amber)
+Accent: #FFEEE6 (Golden Amber)
 Success: #4CAF50 (Green)
 Warning: #FFC107 (Yellow)
 Danger: #FF5252 (Red)
-Neutral: #F5F5F5 (Light Gray)
+Neutral: #F3F3F5 (Light Gray)
 Dark: #2C2C2C (Charcoal)
 
 Typography:

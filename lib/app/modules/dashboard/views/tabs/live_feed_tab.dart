@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+
+import '../../../../widgets/circle_icon_button.dart';
+import '../../../../widgets/fullscreen_feed_card.dart';
+import '../../../../routes/app_pages.dart';
+import 'package:get/get.dart';
+
+class LiveFeedTab extends StatelessWidget {
+  const LiveFeedTab({super.key, required this.onMenuTap});
+
+  final VoidCallback onMenuTap;
+
+  static void _joinRoom() {
+    Get.toNamed(Routes.NEGOTIATION_ROOM);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final feed = [
+      FullscreenFeedCard(
+        title: 'Botanica Rose Lamp',
+        vendor: 'Nathan Rusl',
+        subtitle: 'A soft glow for cozy nights. Limited pieces today.',
+        imageUrl:
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Orange_flowers_in_macro_%28Unsplash%29.jpg/960px-Orange_flowers_in_macro_%28Unsplash%29.jpg',
+        viewers: '12.3k',
+        offers: '250',
+        saves: '100',
+        userImageUrl:
+            'https://upload.wikimedia.org/wikipedia/commons/7/74/Portrait_%28Unsplash%29.jpg',
+        onJoin: _joinRoom,
+      ),
+      FullscreenFeedCard(
+        title: 'Campfire Speaker Set',
+        vendor: 'Robbinson',
+        subtitle: 'Warm sound and calm glow. Offer ends soon.',
+        imageUrl:
+            'https://upload.wikimedia.org/wikipedia/commons/7/76/Campfire_%2815621989189%29.jpg',
+        viewers: '9.1k',
+        offers: '180',
+        saves: '72',
+        userImageUrl:
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Portrait_of_a_woman_%28Unsplash%29.jpg/640px-Portrait_of_a_woman_%28Unsplash%29.jpg',
+        onJoin: _joinRoom,
+      ),
+      FullscreenFeedCard(
+        title: 'Ceramic Brew Kit',
+        vendor: 'Budiarti',
+        subtitle: 'Handmade set, small batch. Slow and steady haggles.',
+        imageUrl:
+            'https://upload.wikimedia.org/wikipedia/commons/7/71/Coffee_%28Unsplash%29.jpg',
+        viewers: '8.4k',
+        offers: '96',
+        saves: '41',
+        userImageUrl:
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Portrait_of_a_man_%28Unsplash%29.jpg/640px-Portrait_of_a_man_%28Unsplash%29.jpg',
+        onJoin: _joinRoom,
+      ),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final height = constraints.maxHeight == double.infinity
+            ? size.height
+            : constraints.maxHeight;
+        return SizedBox(
+          height: height,
+          width: size.width,
+          child: Stack(
+            children: [
+              PageView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: feed.length,
+                itemBuilder: (context, index) {
+                  return SizedBox(
+                    height: height,
+                    width: size.width,
+                    child: feed[index],
+                  );
+                },
+              ),
+              Positioned(
+                top: 16,
+                left: 16,
+                child: CircleIconButton(
+                  icon: Icons.menu_rounded,
+                  onTap: onMenuTap,
+                ),
+              ),
+              const Positioned(
+                top: 16,
+                right: 16,
+                child: CircleIconButton(icon: Icons.notifications_none_rounded),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// FullscreenFeedCard lives in widgets.

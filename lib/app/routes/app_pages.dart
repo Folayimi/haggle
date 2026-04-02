@@ -8,6 +8,8 @@ import '../modules/login/views/login_view.dart';
 import '../modules/login/views/signup_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/negotiation_room/bindings/negotiation_room_binding.dart';
+import '../modules/negotiation_room/views/negotiation_room_view.dart';
 
 part 'app_routes.dart';
 
@@ -39,6 +41,11 @@ class AppPages {
     GetPage(
       name: _Paths.FORGOT_PASSWORD,
       page: () => const ForgotPasswordView(),
+    ),
+    GetPage(
+      name: _Paths.NEGOTIATION_ROOM,
+      page: () => const NegotiationRoomView(),
+      binding: NegotiationRoomBinding(),
     ),
   ];
 }

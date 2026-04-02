@@ -44,7 +44,7 @@ class AuthScaffold extends StatelessWidget {
               if (!isWide) {
                 return Column(
                   children: [
-                    SizedBox(height: 320, child: hero),
+                    SizedBox(height: 220, child: hero),
                     Expanded(child: content),
                   ],
                 );
@@ -53,10 +53,7 @@ class AuthScaffold extends StatelessWidget {
               return Row(
                 children: [
                   Expanded(child: hero),
-                  SizedBox(
-                    width: 420,
-                    child: content,
-                  ),
+                  SizedBox(width: 420, child: content),
                 ],
               );
             },
@@ -81,14 +78,11 @@ class _AuthHero extends StatelessWidget {
         Positioned.fill(
           child: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  theme.scaffoldBackgroundColor,
-                  theme.colorScheme.surface,
-                ],
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(35),
+                bottomRight: Radius.circular(35),
               ),
+              color: theme.colorScheme.surface,
             ),
           ),
         ),
@@ -97,7 +91,7 @@ class _AuthHero extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Spacer(),
+              // const Spacer(),
               Text(
                 title,
                 style: theme.textTheme.headlineLarge?.copyWith(
@@ -115,11 +109,16 @@ class _AuthHero extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.onSurface.withOpacity(0.06),
                   borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: theme.colorScheme.onSurface.withOpacity(0.12)),
+                  border: Border.all(
+                    color: theme.colorScheme.onSurface.withOpacity(0.12),
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -142,7 +141,7 @@ class _AuthHero extends StatelessWidget {
                   ],
                 ),
               ),
-              const Spacer(),
+              // const Spacer(),
             ],
           ),
         ),

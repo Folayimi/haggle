@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
+
 class HaggleChip extends StatelessWidget {
   const HaggleChip({
     super.key,
@@ -18,7 +20,7 @@ class HaggleChip extends StatelessWidget {
     final color = isSelected
         ? theme.colorScheme.primary.withOpacity(0.85)
         : theme.colorScheme.surface.withOpacity(0.7);
-    final textColor = isSelected ? Colors.white : theme.colorScheme.onSurface;
+    final textColor = isSelected ? AppColors.accent : theme.colorScheme.onSurface;
 
     return InkWell(
       onTap: onTap,

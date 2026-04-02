@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
+
 class MicButton extends StatelessWidget {
   const MicButton({
     super.key,
@@ -14,7 +16,7 @@ class MicButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final color = isActive ? theme.colorScheme.primary : theme.colorScheme.surface;
-    final iconColor = isActive ? Colors.white : theme.colorScheme.primary;
+    final iconColor = isActive ? AppColors.accent : theme.colorScheme.primary;
 
     return InkWell(
       onTap: onPressed,

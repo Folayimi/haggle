@@ -22,12 +22,7 @@ class PriceTag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            theme.colorScheme.primary.withOpacity(0.16),
-            theme.colorScheme.secondary.withOpacity(0.2),
-          ],
-        ),
+        color: theme.colorScheme.primary.withOpacity(0.12),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(color: theme.colorScheme.primary.withOpacity(0.3)),
       ),

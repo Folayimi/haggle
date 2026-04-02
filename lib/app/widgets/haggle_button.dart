@@ -56,19 +56,14 @@ class HaggleButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         child: Ink(
           decoration: BoxDecoration(
-            gradient: isDisabled
-                ? null
-                : (backgroundColor == null
-                    ? LinearGradient(colors: AppColors.neonGradient)
-                    : null),
             color: isDisabled
                 ? theme.dividerColor.withOpacity(0.2)
-                : (backgroundColor ?? Colors.transparent),
+                : (backgroundColor ?? AppColors.primary),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isDisabled
                   ? theme.dividerColor.withOpacity(0.3)
-                  : Colors.white.withOpacity(0.2),
+                  : AppColors.accent.withOpacity(0.6),
             ),
             boxShadow: isDisabled
                 ? []
@@ -86,13 +81,13 @@ class HaggleButton extends StatelessWidget {
             alignment: Alignment.center,
             child: IconTheme(
               data: IconThemeData(
-                color: foregroundColor ?? Colors.white,
+                color: foregroundColor ?? AppColors.accent,
               ),
               child: DefaultTextStyle(
                 style: theme.textTheme.labelLarge?.copyWith(
-                      color: foregroundColor ?? Colors.white,
+                      color: foregroundColor ?? AppColors.accent,
                     ) ??
-                    const TextStyle(color: Colors.white),
+                    const TextStyle(color: AppColors.accent),
                 child: child,
               ),
             ),

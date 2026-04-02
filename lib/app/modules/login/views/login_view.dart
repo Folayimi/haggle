@@ -15,6 +15,21 @@ class LoginView extends GetView<LoginController> {
     return AuthScaffold(
       title: 'Log in',
       subtitle: 'Continue with your Haggle ID or pick a quick sign-in.',
+      bottom: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'New to Haggle?',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface.withOpacity(0.7),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Get.toNamed(Routes.SIGNUP),
+            child: const Text('Create account'),
+          ),
+        ],
+      ),
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
@@ -27,7 +42,9 @@ class LoginView extends GetView<LoginController> {
           children: [
             Text(
               'Choose a login method',
-              style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.onSurface),
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
+              ),
             ),
             const SizedBox(height: 16),
             const _AuthTabRow(),
@@ -41,9 +58,7 @@ class LoginView extends GetView<LoginController> {
             const SizedBox(height: 12),
             TextField(
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
+              decoration: const InputDecoration(labelText: 'Password'),
             ),
             const SizedBox(height: 8),
             Align(
@@ -75,21 +90,6 @@ class LoginView extends GetView<LoginController> {
             ),
           ],
         ),
-      ),
-      bottom: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'New to Haggle?',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Get.toNamed(Routes.SIGNUP),
-            child: const Text('Create account'),
-          ),
-        ],
       ),
     );
   }
@@ -152,17 +152,25 @@ class _DividerLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: Divider(color: Theme.of(context).dividerColor.withOpacity(0.2))),
+        Expanded(
+          child: Divider(
+            color: Theme.of(context).dividerColor.withOpacity(0.2),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
             text,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                ),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+            ),
           ),
         ),
-        Expanded(child: Divider(color: Theme.of(context).dividerColor.withOpacity(0.2))),
+        Expanded(
+          child: Divider(
+            color: Theme.of(context).dividerColor.withOpacity(0.2),
+          ),
+        ),
       ],
     );
   }
