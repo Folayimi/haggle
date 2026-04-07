@@ -11,7 +11,7 @@ class LiveFeedTab extends StatelessWidget {
   final VoidCallback onMenuTap;
 
   static void _joinRoom() {
-    Get.toNamed(Routes.NEGOTIATION_ROOM);
+    Get.toNamed(Routes.NEGOTIATION_ROOM, arguments: {'role': 'buyer'});
   }
 
   @override

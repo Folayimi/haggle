@@ -11,6 +11,7 @@ class CircleIconButton extends StatelessWidget {
     this.backgroundColor = Colors.white,
     this.borderColor = AppColors.neutral,
     this.iconColor = AppColors.dark,
+    this.boxShadow,
   });
 
   final IconData icon;
@@ -19,6 +20,7 @@ class CircleIconButton extends StatelessWidget {
   final Color backgroundColor;
   final Color borderColor;
   final Color iconColor;
+  final List<BoxShadow>? boxShadow;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class CircleIconButton extends StatelessWidget {
         color: backgroundColor,
         shape: BoxShape.circle,
         border: Border.all(color: borderColor),
+        boxShadow: boxShadow,
       ),
       child: Icon(icon, color: iconColor),
     );

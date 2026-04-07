@@ -22,38 +22,38 @@ class ProfileTab extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Container(
-                height: 200,
+              const SizedBox(
+                height: 70,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.accent,
-                  borderRadius: BorderRadius.circular(24),
-                  image: const DecorationImage(
-                    image: NetworkImage(
-                      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Orange_flowers_in_macro_%28Unsplash%29.jpg/960px-Orange_flowers_in_macro_%28Unsplash%29.jpg',
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                foregroundDecoration: BoxDecoration(
-                  color: AppColors.dark.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(24),
-                ),
               ),
               Positioned(
                 top: 16,
                 left: 16,
-                child: CircleIconButton(icon: Icons.chevron_left, onTap: onMenuTap),
+                child: CircleIconButton(
+                  icon: Icons.menu_rounded,
+                  onTap: onMenuTap,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 14,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
               ),
-              const Positioned(
+              Positioned(
                 top: 16,
                 right: 16,
-                child: CircleIconButton(icon: Icons.settings_outlined),
-              ),
-              const Positioned(
-                bottom: 16,
-                right: 16,
-                child: EditChip(label: 'Update header'),
+                child: CircleIconButton(
+                  icon: Icons.settings_outlined,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 14,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../routes/app_pages.dart';
+import 'haggle_button.dart';
 import 'profile_widgets.dart';
 import 'section_header.dart';
 
@@ -12,6 +15,15 @@ class NegotiationTabContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          HaggleButton(
+            label: 'Start live session',
+            icon: Icons.video_call,
+            onPressed: () => Get.toNamed(
+              Routes.NEGOTIATION_ROOM,
+              arguments: {'role': 'seller'},
+            ),
+          ),
+          const SizedBox(height: 16),
           const SectionHeader(title: 'Haggle KPIs'),
           const SizedBox(height: 12),
           Row(

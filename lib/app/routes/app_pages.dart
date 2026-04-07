@@ -44,7 +44,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.NEGOTIATION_ROOM,
-      page: () => const NegotiationRoomView(),
+      page: () => NegotiationRoomView(),
       binding: NegotiationRoomBinding(),
     ),
   ];
