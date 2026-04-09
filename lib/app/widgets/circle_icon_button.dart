@@ -7,7 +7,7 @@ class CircleIconButton extends StatelessWidget {
     super.key,
     required this.icon,
     this.onTap,
-    this.size = 40,
+    this.size = 45,
     this.backgroundColor = Colors.white,
     this.borderColor = AppColors.neutral,
     this.iconColor = AppColors.dark,

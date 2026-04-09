@@ -11,13 +11,13 @@ class DashboardBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 90,
+      height: 80,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
           Positioned.fill(
             child: Container(
-              padding: const EdgeInsets.fromLTRB(18, 10, 18, 16),
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border(

@@ -149,6 +149,7 @@ class _MarketTabState extends State<MarketTab> {
 
   static void _showLiveDetails(BuildContext context, _MarketLive marketLive) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final featureItem = marketLive.seller.products.isNotEmpty
         ? marketLive.seller.products.first
         : null;
@@ -163,9 +164,9 @@ class _MarketTabState extends State<MarketTab> {
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: SafeArea(
           top: false,
@@ -179,7 +180,7 @@ class _MarketTabState extends State<MarketTab> {
                     width: 52,
                     height: 5,
                     decoration: BoxDecoration(
-                      color: AppColors.neutral,
+                      color: colorScheme.outlineVariant,
                       borderRadius: BorderRadius.circular(999),
                     ),
                   ),
@@ -213,7 +214,7 @@ class _MarketTabState extends State<MarketTab> {
                             Text(
                               marketLive.seller.username,
                               style: theme.textTheme.labelMedium?.copyWith(
-                                color: AppColors.dark.withOpacity(0.62),
+                                color: colorScheme.onSurface.withOpacity(0.62),
                               ),
                             ),
                           ],
@@ -271,7 +272,7 @@ class _MarketTabState extends State<MarketTab> {
                 Text(
                   marketLive.live.preview,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.dark.withOpacity(0.76),
+                    color: colorScheme.onSurface.withOpacity(0.76),
                     height: 1.45,
                   ),
                 ),
@@ -289,7 +290,7 @@ class _MarketTabState extends State<MarketTab> {
                   Text(
                     '${featureItem.name}  |  ${featureItem.price}',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.dark,
+                      color: colorScheme.onSurface,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -297,7 +298,7 @@ class _MarketTabState extends State<MarketTab> {
                   Text(
                     featureItem.description,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.dark.withOpacity(0.72),
+                      color: colorScheme.onSurface.withOpacity(0.72),
                       height: 1.4,
                     ),
                   ),
@@ -329,16 +330,18 @@ class _MarketTabState extends State<MarketTab> {
                                   'Ticket reserved',
                                   'You will be notified a few minutes before and when the negotiation begins.',
                                   snackPosition: SnackPosition.BOTTOM,
-                                  backgroundColor: Colors.white,
-                                  colorText: AppColors.dark,
+                                  backgroundColor: colorScheme.surface,
+                                  colorText: colorScheme.onSurface,
                                   margin: const EdgeInsets.all(16),
                                 );
                               },
                         style: FilledButton.styleFrom(
                           backgroundColor: marketLive.isOngoing || !isReserved
                               ? AppColors.primary
-                              : AppColors.dark,
-                          foregroundColor: Colors.white,
+                              : colorScheme.surfaceVariant,
+                          foregroundColor: marketLive.isOngoing || !isReserved
+                              ? colorScheme.onPrimary
+                              : colorScheme.onSurface,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
@@ -387,7 +390,7 @@ class _MarketTabState extends State<MarketTab> {
                           width: 44,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: Colors.black12,
+                            color: theme.colorScheme.outlineVariant,
                             borderRadius: BorderRadius.circular(999),
                           ),
                         ),
@@ -403,7 +406,7 @@ class _MarketTabState extends State<MarketTab> {
                       Text(
                         'Pick a category to tailor what shows up in your feed.',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.black54,
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
                         ),
                       ),
                       const SizedBox(height: 14),
@@ -415,8 +418,10 @@ class _MarketTabState extends State<MarketTab> {
                           icon: const Icon(Icons.clear_all_rounded),
                           label: const Text('All categories'),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.dark,
-                            side: const BorderSide(color: AppColors.neutral),
+                            foregroundColor: theme.colorScheme.onSurface,
+                            side: BorderSide(
+                              color: theme.colorScheme.outlineVariant,
+                            ),
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
@@ -425,10 +430,11 @@ class _MarketTabState extends State<MarketTab> {
                         ),
                       ),
                       const SizedBox(height: 14),
-                      const TabBar(
-                        labelColor: AppColors.dark,
-                        unselectedLabelColor: Color(0xFF8B8B8B),
-                        indicatorColor: AppColors.dark,
+                      TabBar(
+                        labelColor: theme.colorScheme.onSurface,
+                        unselectedLabelColor: theme.colorScheme.onSurface
+                            .withOpacity(0.55),
+                        indicatorColor: theme.colorScheme.onSurface,
                         indicatorWeight: 2.5,
                         tabs: [
                           Tab(text: 'Products'),
@@ -508,6 +514,8 @@ class _MarketTabState extends State<MarketTab> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final sellerProducts = sellerProfiles
         .expand(
           (seller) => seller.products.map(
@@ -614,7 +622,7 @@ class _MarketTabState extends State<MarketTab> {
     final trendingLives = _buildTrendingLives(searchedOngoingLives);
     final extraHeaderRows =
         (_selectedCategory != null ? 1 : 0) + (_searchQuery.isNotEmpty ? 1 : 0);
-    final headerHeight = 150.0 + (extraHeaderRows * 48);
+    final headerHeight = 70.0 + (extraHeaderRows * 65);
 
     return DefaultTabController(
       length: 4,
@@ -622,11 +630,12 @@ class _MarketTabState extends State<MarketTab> {
         children: [
           NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
+              final colorScheme = Theme.of(context).colorScheme;
               return [
                 SliverAppBar(
                   pinned: true,
                   automaticallyImplyLeading: false,
-                  backgroundColor: AppColors.lightBackground,
+                  backgroundColor: colorScheme.background,
                   surfaceTintColor: Colors.transparent,
                   elevation: 0,
                   toolbarHeight: headerHeight,
@@ -641,50 +650,62 @@ class _MarketTabState extends State<MarketTab> {
                             children: [
                               CircleIconButton(
                                 icon: Icons.menu_rounded,
+                                size: 34,
+                                backgroundColor: colorScheme.surface,
+                                borderColor: colorScheme.outlineVariant,
+                                iconColor: colorScheme.onSurface,
                                 onTap: widget.onMenuTap,
                               ),
-                              const Spacer(),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: TextField(
+                                  controller: _searchController,
+                                  readOnly: true,
+                                  onTap: _openSearch,
+                                  decoration: InputDecoration(
+                                    hintText:
+                                        'Search products, sellers, services, or live schedules',
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                      color: colorScheme.onSurface,
+                                      size: 18,
+                                    ),
+                                    suffixIcon: Icon(
+                                      Icons.tune_rounded,
+                                      color: colorScheme.onSurface,
+                                      size: 18,
+                                    ),
+                                    filled: true,
+                                    fillColor: colorScheme.surface,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 10,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: BorderSide(
+                                        color: colorScheme.outlineVariant,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: BorderSide(
+                                        color: colorScheme.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
                               CircleIconButton(
                                 icon: Icons.notifications_none_rounded,
+                                size: 34,
+                                backgroundColor: colorScheme.surface,
+                                borderColor: colorScheme.outlineVariant,
+                                iconColor: colorScheme.onSurface,
                                 onTap: () => Get.toNamed(Routes.REMINDERS),
                               ),
                             ],
-                          ),
-                          const SizedBox(height: 14),
-                          TextField(
-                            controller: _searchController,
-                            readOnly: true,
-                            onTap: _openSearch,
-                            decoration: InputDecoration(
-                              hintText:
-                                  'Search products, sellers, services, or live schedules',
-                              prefixIcon: const Icon(
-                                Icons.search,
-                                color: AppColors.dark,
-                              ),
-                              suffixIcon: const Icon(
-                                Icons.tune_rounded,
-                                color: AppColors.dark,
-                              ),
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 14,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: const BorderSide(
-                                  color: AppColors.neutral,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: const BorderSide(
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                            ),
                           ),
                           if (_selectedCategory != null) ...[
                             const SizedBox(height: 10),
@@ -695,24 +716,27 @@ class _MarketTabState extends State<MarketTab> {
                                 vertical: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: colorScheme.surface,
                                 borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: AppColors.neutral),
+                                border: Border.all(
+                                  color: colorScheme.outlineVariant,
+                                ),
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.filter_list_rounded,
                                     size: 18,
-                                    color: AppColors.dark,
+                                    color: colorScheme.onSurface,
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
                                       'Filter: $_selectedCategory',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: theme.textTheme.labelLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
                                   ),
                                   TextButton(
@@ -734,24 +758,27 @@ class _MarketTabState extends State<MarketTab> {
                                 vertical: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: colorScheme.surface,
                                 borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: AppColors.neutral),
+                                border: Border.all(
+                                  color: colorScheme.outlineVariant,
+                                ),
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.search,
                                     size: 18,
-                                    color: AppColors.dark,
+                                    color: colorScheme.onSurface,
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
                                       'Search: $_searchQuery',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: theme.textTheme.labelLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
                                   ),
                                   TextButton(
@@ -776,20 +803,18 @@ class _MarketTabState extends State<MarketTab> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
                             'Trending live',
-                            style: TextStyle(
-                              fontSize: 18,
+                            style: theme.textTheme.titleSmall?.copyWith(
                               fontWeight: FontWeight.w800,
-                              color: AppColors.dark,
                             ),
                           ),
                         ),
                         const SizedBox(height: 14),
                         SizedBox(
-                          height: 188,
+                          height: 150,
                           child: LayoutBuilder(
                             builder: (context, constraints) {
                               const sidePadding = 16.0;
@@ -835,9 +860,9 @@ class _MarketTabState extends State<MarketTab> {
                                             begin: Alignment.centerLeft,
                                             end: Alignment.centerRight,
                                             colors: [
-                                              AppColors.lightBackground
+                                              colorScheme.background
                                                   .withOpacity(0),
-                                              AppColors.lightBackground,
+                                              colorScheme.background,
                                             ],
                                           ),
                                         ),
@@ -849,7 +874,7 @@ class _MarketTabState extends State<MarketTab> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 18),
+                        const SizedBox(height: 8),
                       ],
                     ),
                   ),
@@ -857,16 +882,18 @@ class _MarketTabState extends State<MarketTab> {
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: _MarketTabBarDelegate(
-                    const TabBar(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      indicatorColor: AppColors.dark,
+                    TabBar(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      indicatorColor: colorScheme.onSurface,
                       indicatorWeight: 2.5,
                       indicatorSize: TabBarIndicatorSize.tab,
-                      labelColor: AppColors.dark,
-                      unselectedLabelColor: Color(0xFF8B8B8B),
-                      labelStyle: TextStyle(
+                      labelColor: colorScheme.onSurface,
+                      unselectedLabelColor: colorScheme.onSurface.withOpacity(
+                        0.55,
+                      ),
+                      labelStyle: const TextStyle(
                         fontWeight: FontWeight.w800,
-                        fontSize: 15,
+                        fontSize: 13,
                       ),
                       tabs: [
                         Tab(text: 'Products'),
@@ -886,6 +913,11 @@ class _MarketTabState extends State<MarketTab> {
                   onSellerTap: _openSellerProfile,
                   onProductTap: _openProductDetail,
                 ),
+                _ServicesMarketView(
+                  services: searchedServices,
+                  onSellerTap: _openSellerProfile,
+                  onServiceTap: _openServiceDetail,
+                ),
                 _LivesMarketView(
                   lives: searchedOngoingLives,
                   onLiveTap: (live) => _showLiveDetails(context, live),
@@ -895,11 +927,6 @@ class _MarketTabState extends State<MarketTab> {
                   lives: searchedScheduledLives,
                   onLiveTap: (live) => _showLiveDetails(context, live),
                   onSellerTap: _openSellerProfile,
-                ),
-                _ServicesMarketView(
-                  services: searchedServices,
-                  onSellerTap: _openSellerProfile,
-                  onServiceTap: _openServiceDetail,
                 ),
               ],
             ),
@@ -912,8 +939,8 @@ class _MarketTabState extends State<MarketTab> {
               left: false,
               child: FloatingActionButton(
                 mini: true,
-                backgroundColor: Colors.white.withOpacity(0.92),
-                foregroundColor: Colors.black87,
+                backgroundColor: colorScheme.surface.withOpacity(0.92),
+                foregroundColor: colorScheme.onSurface,
                 onPressed: () => _openCategoryPicker(context),
                 child: const Icon(Icons.filter_list_rounded),
               ),
@@ -954,7 +981,7 @@ class _ProductsMarketView extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: 14,
         crossAxisSpacing: 14,
-        childAspectRatio: 0.72,
+        childAspectRatio: 0.68,
       ),
       itemBuilder: (context, index) => _MarketProductCard(
         product: products[index],
@@ -1070,17 +1097,21 @@ class _CategoryList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.black12),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
               ),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(category, style: theme.textTheme.bodyMedium),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
                     size: 18,
-                    color: Colors.black45,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.55),
                   ),
                 ],
               ),
@@ -1106,8 +1137,9 @@ class _MarketServiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Material(
-      color: Colors.white,
+      color: colorScheme.surface,
       borderRadius: BorderRadius.circular(22),
       child: InkWell(
         onTap: onTap,
@@ -1116,7 +1148,7 @@ class _MarketServiceCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: AppColors.neutral),
+            border: Border.all(color: colorScheme.outlineVariant),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1127,7 +1159,7 @@ class _MarketServiceCard extends StatelessWidget {
                     width: 46,
                     height: 46,
                     decoration: BoxDecoration(
-                      color: AppColors.accent,
+                      color: colorScheme.surfaceVariant,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: const Icon(
@@ -1140,7 +1172,7 @@ class _MarketServiceCard extends StatelessWidget {
                     child: Text(
                       service.category,
                       style: theme.textTheme.labelMedium?.copyWith(
-                        color: AppColors.dark.withOpacity(0.7),
+                        color: colorScheme.onSurface.withOpacity(0.7),
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -1148,7 +1180,7 @@ class _MarketServiceCard extends StatelessWidget {
                   Text(
                     service.price,
                     style: theme.textTheme.labelLarge?.copyWith(
-                      color: AppColors.dark,
+                      color: colorScheme.onSurface,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -1167,7 +1199,7 @@ class _MarketServiceCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.dark.withOpacity(0.66),
+                  color: colorScheme.onSurface.withOpacity(0.66),
                   height: 1.4,
                 ),
               ),
@@ -1185,15 +1217,15 @@ class _MarketServiceCard extends StatelessWidget {
                       child: Text(
                         service.seller.name,
                         style: theme.textTheme.labelMedium?.copyWith(
-                          color: AppColors.dark.withOpacity(0.7),
+                          color: colorScheme.onSurface.withOpacity(0.7),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.chevron_right_rounded,
                       size: 18,
-                      color: Colors.black45,
+                      color: colorScheme.onSurface.withOpacity(0.55),
                     ),
                   ],
                 ),
@@ -1220,6 +1252,7 @@ class _TrendingLiveCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final coverImage = live.seller.products.isNotEmpty
         ? live.seller.products.first.imageUrl
         : live.seller.coverImageUrl;
@@ -1342,8 +1375,9 @@ class _MarketProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Material(
-      color: Colors.white,
+      color: colorScheme.surface,
       borderRadius: BorderRadius.circular(24),
       child: InkWell(
         onTap: onTap,
@@ -1351,7 +1385,7 @@ class _MarketProductCard extends StatelessWidget {
         child: Ink(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.neutral),
+            border: Border.all(color: colorScheme.outlineVariant),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1380,13 +1414,13 @@ class _MarketProductCard extends StatelessWidget {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
+                            color: colorScheme.surface.withOpacity(0.9),
                             borderRadius: BorderRadius.circular(999),
                           ),
                           child: Text(
                             product.product.category,
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: AppColors.dark,
+                              color: colorScheme.onSurface,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -1419,7 +1453,7 @@ class _MarketProductCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.labelMedium?.copyWith(
-                            color: AppColors.dark.withOpacity(0.62),
+                            color: colorScheme.onSurface.withOpacity(0.62),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -1429,7 +1463,7 @@ class _MarketProductCard extends StatelessWidget {
                         product.product.price,
                         style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w800,
-                          color: AppColors.dark,
+                          color: colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -1460,6 +1494,7 @@ class _MarketLiveGridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final coverImage = live.seller.products.isNotEmpty
         ? live.seller.products.first.imageUrl
         : live.seller.coverImageUrl;
@@ -1506,8 +1541,8 @@ class _MarketLiveGridCard extends StatelessWidget {
                         color: live.isOngoing
                             ? AppColors.primary
                             : isReserved
-                            ? AppColors.dark
-                            : Colors.white.withOpacity(0.9),
+                            ? colorScheme.primaryContainer
+                            : colorScheme.surface.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
@@ -1517,9 +1552,11 @@ class _MarketLiveGridCard extends StatelessWidget {
                             ? 'Ticket reserved'
                             : live.live.schedule,
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: live.isOngoing || isReserved
-                              ? Colors.white
-                              : AppColors.dark,
+                          color: live.isOngoing
+                              ? colorScheme.onPrimary
+                              : isReserved
+                              ? colorScheme.onPrimaryContainer
+                              : colorScheme.onSurface,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -1583,10 +1620,11 @@ class _LiveMetaTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F5F1),
+        color: colorScheme.surfaceVariant,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Column(
@@ -1595,7 +1633,7 @@ class _LiveMetaTile extends StatelessWidget {
           Text(
             label,
             style: theme.textTheme.labelMedium?.copyWith(
-              color: AppColors.dark.withOpacity(0.6),
+              color: colorScheme.onSurface.withOpacity(0.6),
             ),
           ),
           const SizedBox(height: 6),

@@ -20,6 +20,7 @@ import '../modules/create/views/schedule_live_view.dart';
 import '../modules/market/views/product_detail_view.dart';
 import '../modules/market/views/market_search_view.dart';
 import '../modules/market/views/service_detail_view.dart';
+import '../modules/profile/views/edit_profile_view.dart';
 
 part 'app_routes.dart';
 
@@ -96,6 +97,10 @@ class AppPages {
     GetPage(
       name: _Paths.MARKET_SEARCH,
       page: () => const MarketSearchView(),
+    ),
+    GetPage(
+      name: _Paths.EDIT_PROFILE,
+      page: () => const EditProfileView(),
     ),
   ];
 }

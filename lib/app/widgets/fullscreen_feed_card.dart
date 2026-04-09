@@ -49,97 +49,119 @@ class FullscreenFeedCard extends StatelessWidget {
             color: AppColors.dark.withOpacity(0.3),
           ),
         ),
-        SafeArea(
-          minimum: const EdgeInsets.fromLTRB(20, 80, 20, 120),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Align(
-                alignment: Alignment.bottomRight,
-                child: UserActionStack(
-                  userImageUrl: userImageUrl,
-                  likes: viewers,
-                  comments: offers,
-                  offers: saves,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  'Live now',
-                  style: theme.textTheme.labelSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 6),
-              InkWell(
-                onTap: onSellerTap,
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(
-                        radius: 14,
-                        backgroundImage: NetworkImage(userImageUrl),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'by $vendor',
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: Colors.white.withOpacity(0.92),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Icon(
-                        Icons.open_in_new_rounded,
-                        size: 16,
-                        color: Colors.white.withOpacity(0.85),
-                      ),
-                    ],
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final isCompact = constraints.maxHeight < 720;
+            final topInset = isCompact ? 56.0 : 64.0;
+            final bottomInset = isCompact ? 32.0 : 40.0;
+            final contentGap = isCompact ? 8.0 : 10.0;
+            final ctaGap = isCompact ? 12.0 : 16.0;
+            final headlineStyle = isCompact ? theme.textTheme.titleLarge : theme.textTheme.headlineSmall;
+
+            return SafeArea(
+              minimum: EdgeInsets.fromLTRB(20, topInset, 20, bottomInset),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: UserActionStack(
+                      userImageUrl: userImageUrl,
+                      likes: viewers,
+                      comments: offers,
+                      offers: saves,
+                      compact: isCompact,
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                subtitle,
-                style: theme.textTheme.bodySmall?.copyWith(color: Colors.white.withOpacity(0.9)),
-              ),
-              const SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: InkWell(
-                  onTap: onJoin,
-                  borderRadius: BorderRadius.circular(18),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                       color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      'Join negotiation',
-                      style: theme.textTheme.labelLarge?.copyWith(color: Colors.white),
+                      'Live now',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(height: contentGap),
+                  Text(
+                    title,
+                    style: headlineStyle?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  InkWell(
+                    onTap: onSellerTap,
+                    borderRadius: BorderRadius.circular(20),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircleAvatar(
+                            radius: 14,
+                            backgroundImage: NetworkImage(userImageUrl),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'by $vendor',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: Colors.white.withOpacity(0.92),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Icon(
+                            Icons.open_in_new_rounded,
+                            size: 16,
+                            color: Colors.white.withOpacity(0.85),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: contentGap),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withOpacity(0.9),
+                    ),
+                  ),
+                  SizedBox(height: ctaGap),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: InkWell(
+                      onTap: onJoin,
+                      borderRadius: BorderRadius.circular(18),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Text(
+                          'Join negotiation',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/mock_seller_profiles.dart';
@@ -224,7 +225,10 @@ class ProfileTab extends StatelessWidget {
                               child: HaggleButton(
                                 label: 'Edit profile',
                                 icon: Icons.edit_outlined,
-                                onPressed: () {},
+                                onPressed: () => Get.toNamed(
+                                  Routes.EDIT_PROFILE,
+                                  arguments: seller,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -232,6 +236,21 @@ class ProfileTab extends StatelessWidget {
                               child: _SecondaryProfileAction(
                                 label: 'Share profile',
                                 icon: Icons.ios_share_outlined,
+                                onTap: () async {
+                                  final shareText =
+                                      'Check out ${seller.name} on Haggle: haggle.app/${seller.username.replaceAll('@', '')}';
+                                  await Clipboard.setData(
+                                    ClipboardData(text: shareText),
+                                  );
+                                  Get.snackbar(
+                                    'Profile link copied',
+                                    'Share this link with buyers to view your profile.',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.white,
+                                    colorText: AppColors.dark,
+                                    margin: const EdgeInsets.all(16),
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -490,33 +509,44 @@ class _SecondaryProfileAction extends StatelessWidget {
   const _SecondaryProfileAction({
     required this.label,
     required this.icon,
+    this.onTap,
   });
 
   final String label;
   final IconData icon;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.neutral),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 18, color: AppColors.dark),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: AppColors.dark,
-                  fontWeight: FontWeight.w700,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(18),
+          child: Ink(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: AppColors.neutral),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 18, color: AppColors.dark),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: AppColors.dark,
+                        fontWeight: FontWeight.w700,
+                      ),
                 ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }

@@ -9,36 +9,42 @@ class UserActionStack extends StatelessWidget {
     required this.likes,
     required this.comments,
     required this.offers,
+    this.compact = false,
   });
 
   final String userImageUrl;
   final String likes;
   final String comments;
   final String offers;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
+    final avatarSize = compact ? 40.0 : 48.0;
+    final actionSize = compact ? 38.0 : 44.0;
+    final gap = compact ? 12.0 : 16.0;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _FollowAvatar(imageUrl: userImageUrl),
-        const SizedBox(height: 16),
-        _ActionIcon(icon: Icons.favorite_border, label: likes),
-        const SizedBox(height: 16),
-        _ActionIcon(icon: Icons.chat_bubble_outline, label: comments),
-        const SizedBox(height: 16),
-        _ActionIcon(icon: Icons.local_offer_outlined, label: offers),
-        const SizedBox(height: 16),
-        const _ActionIcon(icon: Icons.share_outlined, label: 'Share'),
+        _FollowAvatar(imageUrl: userImageUrl, size: avatarSize),
+        SizedBox(height: gap),
+        _ActionIcon(icon: Icons.favorite_border, label: likes, size: actionSize),
+        SizedBox(height: gap),
+        _ActionIcon(icon: Icons.chat_bubble_outline, label: comments, size: actionSize),
+        SizedBox(height: gap),
+        _ActionIcon(icon: Icons.local_offer_outlined, label: offers, size: actionSize),
+        SizedBox(height: gap),
+        _ActionIcon(icon: Icons.share_outlined, label: 'Share', size: actionSize),
       ],
     );
   }
 }
 
 class _FollowAvatar extends StatelessWidget {
-  const _FollowAvatar({required this.imageUrl});
+  const _FollowAvatar({required this.imageUrl, required this.size});
 
   final String imageUrl;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +52,8 @@ class _FollowAvatar extends StatelessWidget {
       alignment: Alignment.bottomRight,
       children: [
         Container(
-          height: 48,
-          width: 48,
+          height: size,
+          width: size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white.withOpacity(0.5), width: 2),
@@ -58,14 +64,14 @@ class _FollowAvatar extends StatelessWidget {
           ),
         ),
         Container(
-          height: 18,
-          width: 18,
+          height: size * 0.38,
+          width: size * 0.38,
           decoration: BoxDecoration(
             color: AppColors.primary,
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white, width: 1.5),
           ),
-          child: const Icon(Icons.add, size: 12, color: Colors.white),
+          child: Icon(Icons.add, size: size * 0.25, color: Colors.white),
         ),
       ],
     );
@@ -73,24 +79,25 @@ class _FollowAvatar extends StatelessWidget {
 }
 
 class _ActionIcon extends StatelessWidget {
-  const _ActionIcon({required this.icon, required this.label});
+  const _ActionIcon({required this.icon, required this.label, required this.size});
 
   final IconData icon;
   final String label;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          height: 44,
-          width: 44,
+          height: size,
+          width: size,
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2),
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white.withOpacity(0.4)),
           ),
-          child: Icon(icon, color: Colors.white),
+          child: Icon(icon, color: Colors.white, size: size * 0.48),
         ),
         const SizedBox(height: 6),
         Text(
