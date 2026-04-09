@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../../../../data/mock_seller_profiles.dart';
+import '../../../../routes/app_pages.dart';
 import '../../../../theme/app_colors.dart';
-import '../../../../widgets/active_chip.dart';
 import '../../../../widgets/circle_icon_button.dart';
-import '../../../../widgets/conversation_tile.dart';
-import '../../../../widgets/section_header.dart';
-import '../../../../widgets/spotlight_card.dart';
-import '../../../../widgets/story_bubble.dart';
 
 class MessageTab extends StatelessWidget {
   const MessageTab({super.key, required this.onMenuTap});
@@ -16,142 +14,302 @@ class MessageTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final onlineSellers = sellerProfiles;
+    final conversations = [
+      _ConversationPreview(
+        seller: sellerProfiles[0],
+        message: 'Can we close at NGN 42k if pickup is today?',
+        time: '2m',
+        unread: 2,
+        isOnline: true,
+      ),
+      _ConversationPreview(
+        seller: sellerProfiles[1],
+        message: 'Counteroffer sent. Waiting for your response.',
+        time: '18m',
+        unread: 0,
+        isOnline: true,
+      ),
+      _ConversationPreview(
+        seller: sellerProfiles[2],
+        message: 'Next session is scheduled for 6:00 PM.',
+        time: '1h',
+        unread: 1,
+        isOnline: true,
+      ),
+      _ConversationPreview(
+        seller: sellerProfiles[0],
+        message: 'Offer accepted. Proceed to payment when ready.',
+        time: '2h',
+        unread: 0,
+        isOnline: false,
+      ),
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             CircleIconButton(icon: Icons.menu_rounded, onTap: onMenuTap),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Messages', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
-                  Text(
-                    'Keep the haggle human',
-                    style: theme.textTheme.labelMedium?.copyWith(color: AppColors.dark.withOpacity(0.6)),
-                  ),
-                ],
-              ),
+            const SizedBox(width: 12),
+            Text(
+              'Messages',
+              style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
             ),
-            const CircleIconButton(icon: Icons.edit_outlined),
           ],
         ),
-        const SizedBox(height: 16),
-        const SectionHeader(title: 'Discover'),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 92,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: const [
-              StoryBubble(
-                label: 'Add story',
-                icon: Icons.add,
-                isAdd: true,
-              ),
-              SizedBox(width: 10),
-              StoryBubble(
-                label: 'Briana',
-                badge: 'Live',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/74/Portrait_%28Unsplash%29.jpg',
-              ),
-              SizedBox(width: 10),
-              StoryBubble(
-                label: 'Jemmie',
-                imageUrl:
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Portrait_of_a_woman_%28Unsplash%29.jpg/640px-Portrait_of_a_woman_%28Unsplash%29.jpg',
-              ),
-              SizedBox(width: 10),
-              StoryBubble(
-                label: 'James',
-                imageUrl:
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Portrait_of_a_man_%28Unsplash%29.jpg/640px-Portrait_of_a_man_%28Unsplash%29.jpg',
-              ),
-              SizedBox(width: 10),
-              StoryBubble(
-                label: 'Roes',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/76/Campfire_%2815621989189%29.jpg',
-              ),
-            ],
+        const SizedBox(height: 18),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.neutral),
           ),
-        ),
-        const SizedBox(height: 16),        
-        TextField(
-          decoration: InputDecoration(
-            hintText: 'Search conversations',
-            prefixIcon: const Icon(Icons.search, color: AppColors.dark),
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(18),
-              borderSide: const BorderSide(color: AppColors.neutral),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(18),
-              borderSide: const BorderSide(color: AppColors.primary),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Search messages',
+              prefixIcon: const Icon(Icons.search, color: AppColors.dark),
+              filled: true,
+              fillColor: Colors.transparent,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: const BorderSide(color: AppColors.primary),
+              ),
             ),
           ),
         ),
         const SizedBox(height: 18),
-        const SectionHeader(title: 'Active Haggles'),
+        Text(
+          'Online sellers',
+          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+        ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 86,
-          child: ListView(
+          height: 94,
+          child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            children: const [
-              ActiveChip(label: 'Live Now', value: '4'),
-              SizedBox(width: 10),
-              ActiveChip(label: 'Waiting Reply', value: '7'),
-              SizedBox(width: 10),
-              ActiveChip(label: 'Scheduled', value: '3'),
-            ],
+            itemCount: onlineSellers.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              final seller = onlineSellers[index];
+              return _OnlineSellerBubble(
+                seller: seller,
+                onTap: () => Get.toNamed(Routes.CONVERSATION, arguments: seller),
+              );
+            },
           ),
         ),
-        const SizedBox(height: 18),
-        const SectionHeader(title: 'Conversations'),
-        const SizedBox(height: 12),
-        const ConversationTile(
-          name: 'Fola Studios',
-          message: 'Can we close at NGN 42k if pickup is today?',
-          time: '2m',
-          unread: 2,
-          avatarUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/74/Portrait_%28Unsplash%29.jpg',
-          status: 'Live | 3:12 left',
+        const SizedBox(height: 20),
+        Text(
+          'Conversations',
+          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: 12),
-        const ConversationTile(
-          name: 'Kola Kicks',
-          message: 'Counteroffer sent. Waiting for your response.',
-          time: '18m',
-          unread: 0,
-          avatarUrl:
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Portrait_of_a_man_%28Unsplash%29.jpg/640px-Portrait_of_a_man_%28Unsplash%29.jpg',
-          status: 'Ends in 20m',
-        ),
-        const SizedBox(height: 12),
-        const ConversationTile(
-          name: 'Cora Studios',
-          message: 'Next session is scheduled for 6:00 PM.',
-          time: '1h',
-          unread: 1,
-          avatarUrl:
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Portrait_of_a_woman_%28Unsplash%29.jpg/640px-Portrait_of_a_woman_%28Unsplash%29.jpg',
-          status: 'Scheduled',
-        ),
-        const SizedBox(height: 12),
-        const ConversationTile(
-          name: 'Budiarti',
-          message: 'Offer accepted. Proceed to payment when ready.',
-          time: '2h',
-          unread: 0,
-          avatarUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/76/Campfire_%2815621989189%29.jpg',
-          status: 'Deal won',
+        const SizedBox(height: 10),
+        ...conversations.map(
+          (conversation) => Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: _ConversationRow(
+              conversation: conversation,
+              onTap: () => Get.toNamed(Routes.CONVERSATION, arguments: conversation.seller),
+            ),
+          ),
         ),
       ],
     );
   }
+}
+
+class _OnlineSellerBubble extends StatelessWidget {
+  const _OnlineSellerBubble({
+    required this.seller,
+    required this.onTap,
+  });
+
+  final SellerProfileData seller;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.primary, width: 2),
+                ),
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(seller.avatarUrl),
+                ),
+              ),
+              Positioned(
+                right: 4,
+                bottom: 4,
+                child: Container(
+                  width: 14,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF27C76F),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            width: 70,
+            child: Text(
+              seller.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: AppColors.dark,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ConversationRow extends StatelessWidget {
+  const _ConversationRow({
+    required this.conversation,
+    required this.onTap,
+  });
+
+  final _ConversationPreview conversation;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
+          child: Row(
+            children: [
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 28,
+                    backgroundColor: AppColors.accent,
+                    backgroundImage: NetworkImage(conversation.seller.avatarUrl),
+                  ),
+                  if (conversation.isOnline)
+                    Positioned(
+                      right: 2,
+                      bottom: 2,
+                      child: Container(
+                        width: 14,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF27C76F),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            conversation.seller.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                        Text(
+                          conversation.time,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: AppColors.dark.withOpacity(0.52),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      conversation.message,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.dark.withOpacity(0.68),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              if (conversation.unread > 0)
+                Container(
+                  constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  decoration: const BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    conversation.unread.toString(),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ConversationPreview {
+  const _ConversationPreview({
+    required this.seller,
+    required this.message,
+    required this.time,
+    required this.unread,
+    required this.isOnline,
+  });
+
+  final SellerProfileData seller;
+  final String message;
+  final String time;
+  final int unread;
+  final bool isOnline;
 }

@@ -10,8 +10,13 @@ import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/negotiation_room/bindings/negotiation_room_binding.dart';
 import '../modules/negotiation_room/views/negotiation_room_view.dart';
+import '../modules/messages/views/conversation_view.dart';
 import '../modules/reminders/views/reminders_view.dart';
 import '../modules/seller_profile/views/seller_profile_view.dart';
+import '../modules/create/views/add_service_view.dart';
+import '../modules/create/views/post_product_view.dart';
+import '../modules/create/views/room_styling_view.dart';
+import '../modules/create/views/schedule_live_view.dart';
 
 part 'app_routes.dart';
 
@@ -56,6 +61,26 @@ class AppPages {
     GetPage(
       name: _Paths.REMINDERS,
       page: () => const RemindersView(),
+    ),
+    GetPage(
+      name: _Paths.CONVERSATION,
+      page: () => const ConversationView(),
+    ),
+    GetPage(
+      name: _Paths.POST_PRODUCT,
+      page: () => const PostProductView(),
+    ),
+    GetPage(
+      name: _Paths.ADD_SERVICE,
+      page: () => const AddServiceView(),
+    ),
+    GetPage(
+      name: _Paths.SCHEDULE_LIVE,
+      page: () => const ScheduleLiveView(),
+    ),
+    GetPage(
+      name: _Paths.ROOM_STYLING,
+      page: () => const RoomStylingView(),
     ),
   ];
 }
