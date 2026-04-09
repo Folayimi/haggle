@@ -21,7 +21,6 @@ class LiveFeedTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final feed = [
       FullscreenFeedCard(
         title: 'Botanica Rose Lamp',
@@ -66,37 +65,40 @@ class LiveFeedTab extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final height = constraints.maxHeight == double.infinity
-            ? size.height
-            : constraints.maxHeight;
-        return SizedBox(
-          height: height,
-          width: size.width,
+        return SizedBox.expand(
           child: Stack(
             children: [
               PageView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: feed.length,
                 itemBuilder: (context, index) {
-                  return SizedBox(
-                    height: height,
-                    width: size.width,
-                    child: feed[index],
-                  );
+                  return feed[index];
                 },
               ),
               Positioned(
-                top: 16,
-                left: 16,
-                child: CircleIconButton(
-                  icon: Icons.menu_rounded,
-                  onTap: onMenuTap,
+                top: 0,
+                left: 0,
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: CircleIconButton(
+                      icon: Icons.menu_rounded,
+                      onTap: onMenuTap,
+                    ),
+                  ),
                 ),
               ),
               const Positioned(
-                top: 16,
-                right: 16,
-                child: CircleIconButton(icon: Icons.notifications_none_rounded),
+                top: 0,
+                right: 0,
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: CircleIconButton(icon: Icons.notifications_none_rounded),
+                  ),
+                ),
               ),
             ],
           ),

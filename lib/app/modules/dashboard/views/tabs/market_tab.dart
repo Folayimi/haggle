@@ -2,18 +2,141 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/live_reminder_store.dart';
+import '../../../../data/market_service.dart';
 import '../../../../data/mock_seller_profiles.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../../theme/app_colors.dart';
 import '../../../../widgets/circle_icon_button.dart';
 
-class MarketTab extends StatelessWidget {
+class MarketTab extends StatefulWidget {
   const MarketTab({super.key, required this.onMenuTap});
 
   final VoidCallback onMenuTap;
 
+  @override
+  State<MarketTab> createState() => _MarketTabState();
+}
+
+class _MarketTabState extends State<MarketTab> {
+  static const _productCategories = [
+    'Electronics',
+    'Phones & Tablets',
+    'Computers & Laptops',
+    'TV & Audio',
+    'Gaming',
+    'Home Appliances',
+    'Furniture',
+    'Home Decor',
+    'Kitchen & Dining',
+    'Utensils',
+    'Bedding & Bath',
+    'Lighting',
+    'Tools & Hardware',
+    'Garden & Outdoor',
+    'Automotive',
+    'Cars',
+    'Motorcycles',
+    'Vehicle Parts & Accessories',
+    'Fashion',
+    'Men\'s Clothing',
+    'Women\'s Clothing',
+    'Shoes',
+    'Bags & Accessories',
+    'Jewelry & Watches',
+    'Beauty & Personal Care',
+    'Health & Wellness',
+    'Baby & Kids',
+    'Toys & Games',
+    'Books',
+    'Stationery',
+    'Sports & Fitness',
+    'Musical Instruments',
+    'Art & Collectibles',
+    'Groceries',
+    'Pet Supplies',
+    'Office Supplies',
+    'Industrial & Commercial',
+    'Real Estate',
+  ];
+
+  static const _serviceCategories = [
+    'Carpentry',
+    'Tailoring',
+    'Road Construction',
+    'Architecture',
+    'Engineering',
+    'Electrical',
+    'Plumbing',
+    'Painting',
+    'Interior Design',
+    'Cleaning',
+    'Laundry',
+    'Moving & Delivery',
+    'Vehicle Repair',
+    'Phone Repair',
+    'Appliance Repair',
+    'IT Support',
+    'Software Development',
+    'Graphic Design',
+    'Photography',
+    'Videography',
+    'Catering',
+    'Event Planning',
+    'Hair & Makeup',
+    'Barbering',
+    'Wellness & Spa',
+    'Tutoring',
+    'Language Lessons',
+    'Fitness Training',
+    'Legal Services',
+    'Accounting',
+    'Consulting',
+    'Real Estate Services',
+    'Security',
+    'Gardening',
+  ];
+
+  String? _selectedCategory;
+  String _searchQuery = '';
+  List<String> _recentSearches = [];
+  final TextEditingController _searchController = TextEditingController();
+
   static void _openSellerProfile(SellerProfileData seller) {
     Get.toNamed(Routes.SELLER_PROFILE, arguments: seller);
+  }
+
+  static void _openProductDetail(_MarketProduct product) {
+    Get.toNamed(
+      Routes.PRODUCT_DETAIL,
+      arguments: {'product': product.product, 'seller': product.seller},
+    );
+  }
+
+  static void _openServiceDetail(MarketService service) {
+    Get.toNamed(Routes.SERVICE_DETAIL, arguments: service);
+  }
+
+  Future<void> _openSearch() async {
+    final result = await Get.toNamed(
+      Routes.MARKET_SEARCH,
+      arguments: {'query': _searchQuery, 'recents': _recentSearches},
+    );
+    if (!mounted) return;
+    if (result is Map) {
+      setState(() {
+        _searchQuery = (result['query'] ?? '').toString();
+        _recentSearches = List<String>.from(
+          result['recents'] ?? _recentSearches,
+        );
+        _searchController.text = _searchQuery;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   static void _joinBuyerLive() {
@@ -26,9 +149,15 @@ class MarketTab extends StatelessWidget {
 
   static void _showLiveDetails(BuildContext context, _MarketLive marketLive) {
     final theme = Theme.of(context);
-    final featureItem = marketLive.seller.products.isNotEmpty ? marketLive.seller.products.first : null;
-    final timeValue = marketLive.isOngoing ? '12 min left' : marketLive.live.schedule;
-    final participantValue = marketLive.isOngoing ? '124 participants' : '38 interested buyers';
+    final featureItem = marketLive.seller.products.isNotEmpty
+        ? marketLive.seller.products.first
+        : null;
+    final timeValue = marketLive.isOngoing
+        ? '12 min left'
+        : marketLive.live.schedule;
+    final participantValue = marketLive.isOngoing
+        ? '124 participants'
+        : '38 interested buyers';
     final reminderId = marketLive.reminderId;
 
     Get.bottomSheet(
@@ -62,7 +191,9 @@ class MarketTab extends StatelessWidget {
                       onTap: () => _openSellerProfile(marketLive.seller),
                       child: CircleAvatar(
                         radius: 24,
-                        backgroundImage: NetworkImage(marketLive.seller.avatarUrl),
+                        backgroundImage: NetworkImage(
+                          marketLive.seller.avatarUrl,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -74,7 +205,9 @@ class MarketTab extends StatelessWidget {
                           children: [
                             Text(
                               marketLive.seller.name,
-                              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
                             const SizedBox(height: 2),
                             Text(
@@ -97,16 +230,17 @@ class MarketTab extends StatelessWidget {
                     child: Image.network(
                       featureItem?.imageUrl ?? marketLive.seller.coverImageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: AppColors.accent,
-                      ),
+                      errorBuilder: (context, error, stackTrace) =>
+                          Container(color: AppColors.accent),
                     ),
                   ),
                 ),
                 const SizedBox(height: 18),
                 Text(
                   marketLive.live.title,
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -129,7 +263,9 @@ class MarketTab extends StatelessWidget {
                 const SizedBox(height: 18),
                 Text(
                   'About this live',
-                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -142,8 +278,12 @@ class MarketTab extends StatelessWidget {
                 if (featureItem != null) ...[
                   const SizedBox(height: 18),
                   Text(
-                    marketLive.isOngoing ? 'Product being displayed' : 'Product or service to be explained',
-                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                    marketLive.isOngoing
+                        ? 'Product being displayed'
+                        : 'Product or service to be explained',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -170,8 +310,8 @@ class MarketTab extends StatelessWidget {
                     final actionLabel = marketLive.isOngoing
                         ? 'Join live'
                         : isReserved
-                            ? 'Ticket reserved'
-                            : 'Get ticket';
+                        ? 'Ticket reserved'
+                        : 'Get ticket';
 
                     return SizedBox(
                       width: double.infinity,
@@ -195,7 +335,9 @@ class MarketTab extends StatelessWidget {
                                 );
                               },
                         style: FilledButton.styleFrom(
-                          backgroundColor: marketLive.isOngoing || !isReserved ? AppColors.primary : AppColors.dark,
+                          backgroundColor: marketLive.isOngoing || !isReserved
+                              ? AppColors.primary
+                              : AppColors.dark,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
@@ -216,67 +358,90 @@ class MarketTab extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final sellerProducts = sellerProfiles
-        .expand((seller) => seller.products.map((product) => _MarketProduct(product: product, seller: seller)))
-        .toList();
-    final ongoingLives = sellerProfiles
-        .expand((seller) => seller.ongoingLives.map((live) => _MarketLive(live: live, seller: seller, isOngoing: true)))
-        .toList();
-    final scheduledLives = sellerProfiles
-        .expand((seller) => seller.upcomingLives.map((live) => _MarketLive(live: live, seller: seller, isOngoing: false)))
-        .toList();
-
-    return DefaultTabController(
-      length: 3,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              pinned: true,
-              automaticallyImplyLeading: false,
-              backgroundColor: AppColors.lightBackground,
-              surfaceTintColor: Colors.transparent,
-              elevation: 0,
-              toolbarHeight: 128,
-              flexibleSpace: SafeArea(
-                bottom: false,
+  Future<void> _openCategoryPicker(BuildContext context) async {
+    final theme = Theme.of(context);
+    final selection = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return SafeArea(
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.cardColor,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
+            ),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: DefaultTabController(
+                length: 2,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          CircleIconButton(
-                            icon: Icons.menu_rounded,
-                            onTap: onMenuTap,
+                      Center(
+                        child: Container(
+                          width: 44,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(999),
                           ),
-                          const Spacer(),
-                          CircleIconButton(
-                            icon: Icons.notifications_none_rounded,
-                            onTap: () => Get.toNamed(Routes.REMINDERS),
-                          ),
-                        ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Filter by category',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Pick a category to tailor what shows up in your feed.',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.black54,
+                        ),
                       ),
                       const SizedBox(height: 14),
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Search products, sellers, services, or live schedules',
-                          prefixIcon: const Icon(Icons.search, color: AppColors.dark),
-                          suffixIcon: const Icon(Icons.tune_rounded, color: AppColors.dark),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: const BorderSide(color: AppColors.neutral),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () =>
+                              Navigator.of(context).pop('All categories'),
+                          icon: const Icon(Icons.clear_all_rounded),
+                          label: const Text('All categories'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.dark,
+                            side: const BorderSide(color: AppColors.neutral),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: const BorderSide(color: AppColors.primary),
-                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      const TabBar(
+                        labelColor: AppColors.dark,
+                        unselectedLabelColor: Color(0xFF8B8B8B),
+                        indicatorColor: AppColors.dark,
+                        indicatorWeight: 2.5,
+                        tabs: [
+                          Tab(text: 'Products'),
+                          Tab(text: 'Services'),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: TabBarView(
+                          children: [
+                            _CategoryList(categories: _productCategories),
+                            _CategoryList(categories: _serviceCategories),
+                          ],
                         ),
                       ),
                     ],
@@ -284,97 +449,503 @@ class MarketTab extends StatelessWidget {
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Trending live',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.dark,
-                        ),
+          ),
+        );
+      },
+    );
+
+    if (!mounted) return;
+    setState(() {
+      if (selection == null || selection == 'All categories') {
+        _selectedCategory = null;
+      } else {
+        _selectedCategory = selection;
+      }
+    });
+  }
+
+  bool _matchesCategory(String category, SellerProduct product) {
+    final filter = category.toLowerCase();
+    final fields = [product.category, product.name, product.description];
+    return fields.any((value) => value.toLowerCase().contains(filter));
+  }
+
+  bool _matchesSearch(String query, List<String> fields) {
+    if (query.isEmpty) return true;
+    final filter = query.toLowerCase();
+    return fields.any((value) => value.toLowerCase().contains(filter));
+  }
+
+  bool _liveMatchesCategory(String category, _MarketLive live) {
+    return live.seller.products.any(
+      (product) => _matchesCategory(category, product),
+    );
+  }
+
+  bool _serviceMatchesCategory(String category, MarketService service) {
+    final filter = category.toLowerCase();
+    final fields = [
+      service.category,
+      service.name,
+      service.description,
+      service.seller.name,
+      service.seller.businessName,
+    ];
+    return fields.any((value) => value.toLowerCase().contains(filter));
+  }
+
+  List<_MarketLive> _buildTrendingLives(List<_MarketLive> lives) {
+    if (lives.isEmpty) return lives;
+    const targetCount = 6;
+    final expanded = <_MarketLive>[];
+    var index = 0;
+    while (expanded.length < targetCount) {
+      expanded.add(lives[index % lives.length]);
+      index++;
+    }
+    return expanded;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final sellerProducts = sellerProfiles
+        .expand(
+          (seller) => seller.products.map(
+            (product) => _MarketProduct(product: product, seller: seller),
+          ),
+        )
+        .toList();
+    final ongoingLives = sellerProfiles
+        .expand(
+          (seller) => seller.ongoingLives.map(
+            (live) => _MarketLive(live: live, seller: seller, isOngoing: true),
+          ),
+        )
+        .toList();
+    final scheduledLives = sellerProfiles
+        .expand(
+          (seller) => seller.upcomingLives.map(
+            (live) => _MarketLive(live: live, seller: seller, isOngoing: false),
+          ),
+        )
+        .toList();
+    final services = sellerProfiles.asMap().entries.map((entry) {
+      final index = entry.key;
+      final seller = entry.value;
+      final category = _serviceCategories[index % _serviceCategories.length];
+      return MarketService(
+        name: seller.sellsSummary,
+        category: category,
+        description: seller.bio,
+        price: 'From \$${(120 + (index * 40))}',
+        seller: seller,
+      );
+    }).toList();
+
+    final filteredProducts = _selectedCategory == null
+        ? sellerProducts
+        : sellerProducts
+              .where(
+                (entry) => _matchesCategory(_selectedCategory!, entry.product),
+              )
+              .toList();
+    final filteredOngoingLives = _selectedCategory == null
+        ? ongoingLives
+        : ongoingLives
+              .where((live) => _liveMatchesCategory(_selectedCategory!, live))
+              .toList();
+    final filteredScheduledLives = _selectedCategory == null
+        ? scheduledLives
+        : scheduledLives
+              .where((live) => _liveMatchesCategory(_selectedCategory!, live))
+              .toList();
+    final filteredServices = _selectedCategory == null
+        ? services
+        : services
+              .where(
+                (service) =>
+                    _serviceMatchesCategory(_selectedCategory!, service),
+              )
+              .toList();
+
+    final searchedProducts = _searchQuery.isEmpty
+        ? filteredProducts
+        : filteredProducts.where((entry) {
+            return _matchesSearch(_searchQuery, [
+              entry.product.name,
+              entry.product.category,
+              entry.product.description,
+              entry.seller.name,
+              entry.seller.businessName,
+            ]);
+          }).toList();
+    final searchedOngoingLives = _searchQuery.isEmpty
+        ? filteredOngoingLives
+        : filteredOngoingLives.where((live) {
+            return _matchesSearch(_searchQuery, [
+              live.live.title,
+              live.live.preview,
+              live.seller.name,
+              live.seller.businessName,
+            ]);
+          }).toList();
+    final searchedScheduledLives = _searchQuery.isEmpty
+        ? filteredScheduledLives
+        : filteredScheduledLives.where((live) {
+            return _matchesSearch(_searchQuery, [
+              live.live.title,
+              live.live.preview,
+              live.seller.name,
+              live.seller.businessName,
+            ]);
+          }).toList();
+    final searchedServices = _searchQuery.isEmpty
+        ? filteredServices
+        : filteredServices.where((service) {
+            return _matchesSearch(_searchQuery, [
+              service.name,
+              service.category,
+              service.description,
+              service.seller.name,
+              service.seller.businessName,
+            ]);
+          }).toList();
+
+    final trendingLives = _buildTrendingLives(searchedOngoingLives);
+    final extraHeaderRows =
+        (_selectedCategory != null ? 1 : 0) + (_searchQuery.isNotEmpty ? 1 : 0);
+    final headerHeight = 150.0 + (extraHeaderRows * 48);
+
+    return DefaultTabController(
+      length: 4,
+      child: Stack(
+        children: [
+          NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  pinned: true,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: AppColors.lightBackground,
+                  surfaceTintColor: Colors.transparent,
+                  elevation: 0,
+                  toolbarHeight: headerHeight,
+                  flexibleSpace: SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: [
+                              CircleIconButton(
+                                icon: Icons.menu_rounded,
+                                onTap: widget.onMenuTap,
+                              ),
+                              const Spacer(),
+                              CircleIconButton(
+                                icon: Icons.notifications_none_rounded,
+                                onTap: () => Get.toNamed(Routes.REMINDERS),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 14),
+                          TextField(
+                            controller: _searchController,
+                            readOnly: true,
+                            onTap: _openSearch,
+                            decoration: InputDecoration(
+                              hintText:
+                                  'Search products, sellers, services, or live schedules',
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                color: AppColors.dark,
+                              ),
+                              suffixIcon: const Icon(
+                                Icons.tune_rounded,
+                                color: AppColors.dark,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: const BorderSide(
+                                  color: AppColors.neutral,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: const BorderSide(
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (_selectedCategory != null) ...[
+                            const SizedBox(height: 10),
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: AppColors.neutral),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.filter_list_rounded,
+                                    size: 18,
+                                    color: AppColors.dark,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'Filter: $_selectedCategory',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => setState(
+                                      () => _selectedCategory = null,
+                                    ),
+                                    child: const Text('Clear'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                          if (_searchQuery.isNotEmpty) ...[
+                            const SizedBox(height: 10),
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: AppColors.neutral),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.search,
+                                    size: 18,
+                                    color: AppColors.dark,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'Search: $_searchQuery',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => setState(() {
+                                      _searchQuery = '';
+                                      _searchController.clear();
+                                    }),
+                                    child: const Text('Clear'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    SizedBox(
-                      height: 188,
-                      child: ListView.separated(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: ongoingLives.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 10),
-                        itemBuilder: (context, index) => SizedBox(
-                          width: 208,
-                          child: _TrendingLiveCard(
-                            live: ongoingLives[index],
-                            onTap: () => _showLiveDetails(context, ongoingLives[index]),
-                            onSellerTap: () => _openSellerProfile(ongoingLives[index].seller),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'Trending live',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.dark,
+                            ),
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          height: 188,
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              const sidePadding = 16.0;
+                              const itemGap = 10.0;
+                              final availableWidth =
+                                  constraints.maxWidth -
+                                  (sidePadding * 2) -
+                                  (itemGap * 2);
+                              final cardWidth = availableWidth / 3;
+                              return Stack(
+                                children: [
+                                  ListView.separated(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: sidePadding,
+                                    ),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: trendingLives.length,
+                                    separatorBuilder: (_, __) =>
+                                        const SizedBox(width: itemGap),
+                                    itemBuilder: (context, index) => SizedBox(
+                                      width: cardWidth,
+                                      child: _TrendingLiveCard(
+                                        live: trendingLives[index],
+                                        onTap: () => _showLiveDetails(
+                                          context,
+                                          trendingLives[index],
+                                        ),
+                                        onSellerTap: () => _openSellerProfile(
+                                          trendingLives[index].seller,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0,
+                                    child: IgnorePointer(
+                                      child: Container(
+                                        width: 28,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                            colors: [
+                                              AppColors.lightBackground
+                                                  .withOpacity(0),
+                                              AppColors.lightBackground,
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                      ],
                     ),
-                    const SizedBox(height: 18),
-                  ],
-                ),
-              ),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _MarketTabBarDelegate(
-                const TabBar(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  indicatorColor: AppColors.dark,
-                  indicatorWeight: 2.5,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelColor: AppColors.dark,
-                  unselectedLabelColor: Color(0xFF8B8B8B),
-                  labelStyle: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15,
                   ),
-                  tabs: [
-                    Tab(text: 'Products'),
-                    Tab(text: 'Ongoing'),
-                    Tab(text: 'Scheduled'),
-                  ],
                 ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _MarketTabBarDelegate(
+                    const TabBar(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      indicatorColor: AppColors.dark,
+                      indicatorWeight: 2.5,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelColor: AppColors.dark,
+                      unselectedLabelColor: Color(0xFF8B8B8B),
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 15,
+                      ),
+                      tabs: [
+                        Tab(text: 'Products'),
+                        Tab(text: 'Services'),
+                        Tab(text: 'Live'),
+                        Tab(text: 'Scheduled'),
+                      ],
+                    ),
+                  ),
+                ),
+              ];
+            },
+            body: TabBarView(
+              children: [
+                _ProductsMarketView(
+                  products: searchedProducts,
+                  onSellerTap: _openSellerProfile,
+                  onProductTap: _openProductDetail,
+                ),
+                _LivesMarketView(
+                  lives: searchedOngoingLives,
+                  onLiveTap: (live) => _showLiveDetails(context, live),
+                  onSellerTap: _openSellerProfile,
+                ),
+                _LivesMarketView(
+                  lives: searchedScheduledLives,
+                  onLiveTap: (live) => _showLiveDetails(context, live),
+                  onSellerTap: _openSellerProfile,
+                ),
+                _ServicesMarketView(
+                  services: searchedServices,
+                  onSellerTap: _openSellerProfile,
+                  onServiceTap: _openServiceDetail,
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            right: 16,
+            bottom: 16,
+            child: SafeArea(
+              top: false,
+              left: false,
+              child: FloatingActionButton(
+                mini: true,
+                backgroundColor: Colors.white.withOpacity(0.92),
+                foregroundColor: Colors.black87,
+                onPressed: () => _openCategoryPicker(context),
+                child: const Icon(Icons.filter_list_rounded),
               ),
             ),
-          ];
-        },
-        body: TabBarView(
-          children: [
-            _ProductsMarketView(products: sellerProducts),
-            _LivesMarketView(
-              lives: ongoingLives,
-              onLiveTap: (live) => _showLiveDetails(context, live),
-              onSellerTap: _openSellerProfile,
-            ),
-            _LivesMarketView(
-              lives: scheduledLives,
-              onLiveTap: (live) => _showLiveDetails(context, live),
-              onSellerTap: _openSellerProfile,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
 class _ProductsMarketView extends StatelessWidget {
-  const _ProductsMarketView({required this.products});
+  const _ProductsMarketView({
+    required this.products,
+    required this.onSellerTap,
+    required this.onProductTap,
+  });
 
   final List<_MarketProduct> products;
+  final ValueChanged<SellerProfileData> onSellerTap;
+  final ValueChanged<_MarketProduct> onProductTap;
 
   @override
   Widget build(BuildContext context) {
+    if (products.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: Text('No products match this category right now.'),
+        ),
+      );
+    }
     return GridView.builder(
       key: const PageStorageKey('market-products'),
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
@@ -387,7 +958,8 @@ class _ProductsMarketView extends StatelessWidget {
       ),
       itemBuilder: (context, index) => _MarketProductCard(
         product: products[index],
-        onSellerTap: () => MarketTab._openSellerProfile(products[index].seller),
+        onSellerTap: () => onSellerTap(products[index].seller),
+        onTap: () => onProductTap(products[index]),
       ),
     );
   }
@@ -406,11 +978,21 @@ class _LivesMarketView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (lives.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: Text('No live sessions match this category right now.'),
+        ),
+      );
+    }
     return ValueListenableBuilder<Set<String>>(
       valueListenable: LiveReminderStore.reminders,
       builder: (context, reminders, _) {
         return GridView.builder(
-          key: PageStorageKey('market-lives-${lives.length}-${lives.isNotEmpty && lives.first.isOngoing}'),
+          key: PageStorageKey(
+            'market-lives-${lives.length}-${lives.isNotEmpty && lives.first.isOngoing}',
+          ),
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
           itemCount: lives.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -431,6 +1013,199 @@ class _LivesMarketView extends StatelessWidget {
   }
 }
 
+class _ServicesMarketView extends StatelessWidget {
+  const _ServicesMarketView({
+    required this.services,
+    required this.onSellerTap,
+    required this.onServiceTap,
+  });
+
+  final List<MarketService> services;
+  final ValueChanged<SellerProfileData> onSellerTap;
+  final ValueChanged<MarketService> onServiceTap;
+
+  @override
+  Widget build(BuildContext context) {
+    if (services.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: Text('No services match this category right now.'),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      key: const PageStorageKey('market-services'),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
+      itemCount: services.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, index) => _MarketServiceCard(
+        service: services[index],
+        onTap: () => onServiceTap(services[index]),
+        onSellerTap: () => onSellerTap(services[index].seller),
+      ),
+    );
+  }
+}
+
+class _CategoryList extends StatelessWidget {
+  const _CategoryList({required this.categories});
+
+  final List<String> categories;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ListView.builder(
+      itemCount: categories.length,
+      itemBuilder: (context, index) {
+        final category = categories[index];
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onTap: () => Navigator.of(context).pop(category),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.black12),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(category, style: theme.textTheme.bodyMedium),
+                  ),
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    size: 18,
+                    color: Colors.black45,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _MarketServiceCard extends StatelessWidget {
+  const _MarketServiceCard({
+    required this.service,
+    required this.onSellerTap,
+    required this.onTap,
+  });
+
+  final MarketService service;
+  final VoidCallback onSellerTap;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(22),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(22),
+        child: Ink(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: AppColors.neutral),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(
+                      color: AppColors.accent,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(
+                      Icons.design_services_outlined,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      service.category,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: AppColors.dark.withOpacity(0.7),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    service.price,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: AppColors.dark,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                service.name,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                service.description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: AppColors.dark.withOpacity(0.66),
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 12),
+              GestureDetector(
+                onTap: onSellerTap,
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 14,
+                      backgroundImage: NetworkImage(service.seller.avatarUrl),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        service.seller.name,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: AppColors.dark.withOpacity(0.7),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      size: 18,
+                      color: Colors.black45,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _TrendingLiveCard extends StatelessWidget {
   const _TrendingLiveCard({
     required this.live,
@@ -445,7 +1220,9 @@ class _TrendingLiveCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final coverImage = live.seller.products.isNotEmpty ? live.seller.products.first.imageUrl : live.seller.coverImageUrl;
+    final coverImage = live.seller.products.isNotEmpty
+        ? live.seller.products.first.imageUrl
+        : live.seller.coverImageUrl;
 
     return Material(
       color: Colors.transparent,
@@ -460,7 +1237,8 @@ class _TrendingLiveCard extends StatelessWidget {
               Image.network(
                 coverImage,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(color: AppColors.accent),
+                errorBuilder: (context, error, stackTrace) =>
+                    Container(color: AppColors.accent),
               ),
               DecoratedBox(
                 decoration: BoxDecoration(
@@ -480,7 +1258,10 @@ class _TrendingLiveCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(999),
@@ -500,7 +1281,9 @@ class _TrendingLiveCard extends StatelessWidget {
                           onTap: onSellerTap,
                           child: CircleAvatar(
                             radius: 16,
-                            backgroundImage: NetworkImage(live.seller.avatarUrl),
+                            backgroundImage: NetworkImage(
+                              live.seller.avatarUrl,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -549,96 +1332,113 @@ class _MarketProductCard extends StatelessWidget {
   const _MarketProductCard({
     required this.product,
     required this.onSellerTap,
+    required this.onTap,
   });
 
   final _MarketProduct product;
   final VoidCallback onSellerTap;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(24),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.neutral),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 7,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.network(
-                    product.product.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(color: AppColors.accent),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.neutral),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 7,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
                   ),
-                  Positioned(
-                    top: 10,
-                    left: 10,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(999),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.network(
+                        product.product.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Container(color: AppColors.accent),
                       ),
-                      child: Text(
-                        product.product.category,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppColors.dark,
-                          fontWeight: FontWeight.w700,
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Text(
+                            product.product.category,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: AppColors.dark,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.product.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
-                  ),
-                  const SizedBox(height: 4),
-                  GestureDetector(
-                    onTap: onSellerTap,
-                    child: Text(
-                      product.seller.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: AppColors.dark.withOpacity(0.62),
-                        fontWeight: FontWeight.w600,
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.product.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 4),
+                      GestureDetector(
+                        onTap: onSellerTap,
+                        child: Text(
+                          product.seller.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: AppColors.dark.withOpacity(0.62),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        product.product.price,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.dark,
+                        ),
+                      ),
+                    ],
                   ),
-                  const Spacer(),
-                  Text(
-                    product.product.price,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.dark,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -660,7 +1460,9 @@ class _MarketLiveGridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final coverImage = live.seller.products.isNotEmpty ? live.seller.products.first.imageUrl : live.seller.coverImageUrl;
+    final coverImage = live.seller.products.isNotEmpty
+        ? live.seller.products.first.imageUrl
+        : live.seller.coverImageUrl;
 
     return Material(
       color: Colors.transparent,
@@ -675,7 +1477,8 @@ class _MarketLiveGridCard extends StatelessWidget {
               Image.network(
                 coverImage,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(color: AppColors.accent),
+                errorBuilder: (context, error, stackTrace) =>
+                    Container(color: AppColors.accent),
               ),
               DecoratedBox(
                 decoration: BoxDecoration(
@@ -695,23 +1498,28 @@ class _MarketLiveGridCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: live.isOngoing
                             ? AppColors.primary
                             : isReserved
-                                ? AppColors.dark
-                                : Colors.white.withOpacity(0.9),
+                            ? AppColors.dark
+                            : Colors.white.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
                         live.isOngoing
                             ? 'Live'
                             : isReserved
-                                ? 'Ticket reserved'
-                                : live.live.schedule,
+                            ? 'Ticket reserved'
+                            : live.live.schedule,
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: live.isOngoing || isReserved ? Colors.white : AppColors.dark,
+                          color: live.isOngoing || isReserved
+                              ? Colors.white
+                              : AppColors.dark,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -733,7 +1541,9 @@ class _MarketLiveGridCard extends StatelessWidget {
                           onTap: onSellerTap,
                           child: CircleAvatar(
                             radius: 14,
-                            backgroundImage: NetworkImage(live.seller.avatarUrl),
+                            backgroundImage: NetworkImage(
+                              live.seller.avatarUrl,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -765,10 +1575,7 @@ class _MarketLiveGridCard extends StatelessWidget {
 }
 
 class _LiveMetaTile extends StatelessWidget {
-  const _LiveMetaTile({
-    required this.label,
-    required this.value,
-  });
+  const _LiveMetaTile({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -794,7 +1601,9 @@ class _LiveMetaTile extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             value,
-            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ],
       ),
@@ -814,7 +1623,11 @@ class _MarketTabBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => tabBar.preferredSize.height + 8;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Container(
       color: AppColors.lightBackground,
       alignment: Alignment.centerLeft,
@@ -827,10 +1640,7 @@ class _MarketTabBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class _MarketProduct {
-  const _MarketProduct({
-    required this.product,
-    required this.seller,
-  });
+  const _MarketProduct({required this.product, required this.seller});
 
   final SellerProduct product;
   final SellerProfileData seller;
@@ -848,8 +1658,8 @@ class _MarketLive {
   final bool isOngoing;
 
   String get reminderId => buildLiveReminderId(
-        sellerUsername: seller.username,
-        liveTitle: live.title,
-        schedule: live.schedule,
-      );
+    sellerUsername: seller.username,
+    liveTitle: live.title,
+    schedule: live.schedule,
+  );
 }

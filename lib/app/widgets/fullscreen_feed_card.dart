@@ -49,8 +49,8 @@ class FullscreenFeedCard extends StatelessWidget {
             color: AppColors.dark.withOpacity(0.3),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 90, 20, 150),
+        SafeArea(
+          minimum: const EdgeInsets.fromLTRB(20, 80, 20, 120),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -63,7 +63,7 @@ class FullscreenFeedCard extends StatelessWidget {
                   comments: offers,
                   offers: saves,
                 ),
-              ),              
+              ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(

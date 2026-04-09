@@ -11,7 +11,7 @@ class DashboardBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 96,
+      height: 90,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -64,19 +64,19 @@ class DashboardBottomNav extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 6,
+            top: 8,
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: () => onTap(2),
                 borderRadius: BorderRadius.circular(22),
                 child: Container(
-                  height: 62,
-                  width: 62,
+                  height: 54,
+                  width: 54,
                   decoration: BoxDecoration(
                     color: AppColors.primary,
                     borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: Colors.white, width: 4),
+                    border: Border.all(color: Colors.white, width: 3),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.primary.withOpacity(0.3),
@@ -85,7 +85,7 @@ class DashboardBottomNav extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: const Icon(Icons.add_box_rounded, color: Colors.white, size: 30),
+                  child: const Icon(Icons.add_box_rounded, color: Colors.white, size: 26),
                 ),
               ),
             ),
@@ -122,12 +122,12 @@ class DashboardNavItem extends StatelessWidget {
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 220),
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
                 color: isActive ? AppColors.accent : Colors.transparent,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(icon, color: color, size: 22),
+              child: Icon(icon, color: color, size: 20),
             ),
             const SizedBox(height: 3),
             Text(

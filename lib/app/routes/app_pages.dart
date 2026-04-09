@@ -17,6 +17,9 @@ import '../modules/create/views/add_service_view.dart';
 import '../modules/create/views/post_product_view.dart';
 import '../modules/create/views/room_styling_view.dart';
 import '../modules/create/views/schedule_live_view.dart';
+import '../modules/market/views/product_detail_view.dart';
+import '../modules/market/views/market_search_view.dart';
+import '../modules/market/views/service_detail_view.dart';
 
 part 'app_routes.dart';
 
@@ -81,6 +84,18 @@ class AppPages {
     GetPage(
       name: _Paths.ROOM_STYLING,
       page: () => const RoomStylingView(),
+    ),
+    GetPage(
+      name: _Paths.PRODUCT_DETAIL,
+      page: () => const ProductDetailView(),
+    ),
+    GetPage(
+      name: _Paths.SERVICE_DETAIL,
+      page: () => const ServiceDetailView(),
+    ),
+    GetPage(
+      name: _Paths.MARKET_SEARCH,
+      page: () => const MarketSearchView(),
     ),
   ];
 }

@@ -16,6 +16,9 @@ abstract class Routes {
   static const ADD_SERVICE = _Paths.ADD_SERVICE;
   static const SCHEDULE_LIVE = _Paths.SCHEDULE_LIVE;
   static const ROOM_STYLING = _Paths.ROOM_STYLING;
+  static const PRODUCT_DETAIL = _Paths.PRODUCT_DETAIL;
+  static const SERVICE_DETAIL = _Paths.SERVICE_DETAIL;
+  static const MARKET_SEARCH = _Paths.MARKET_SEARCH;
 }
 
 abstract class _Paths {
@@ -33,4 +36,7 @@ abstract class _Paths {
   static const ADD_SERVICE = '/add-service';
   static const SCHEDULE_LIVE = '/schedule-live';
   static const ROOM_STYLING = '/room-styling';
+  static const PRODUCT_DETAIL = '/product-detail';
+  static const SERVICE_DETAIL = '/service-detail';
+  static const MARKET_SEARCH = '/market-search';
 }
