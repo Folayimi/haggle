@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
+
 class AuthTabRow extends StatelessWidget {
   const AuthTabRow({super.key, this.activeLabel = 'Phone'});
 
@@ -7,12 +9,23 @@ class AuthTabRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        AuthTab(label: 'Phone', isActive: activeLabel == 'Phone'),
-        const SizedBox(width: 20),
-        AuthTab(label: 'Email', isActive: activeLabel == 'Email'),
-      ],
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF6F3EE),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: AuthTab(label: 'Phone', isActive: activeLabel == 'Phone'),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: AuthTab(label: 'Email', isActive: activeLabel == 'Email'),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -26,25 +39,23 @@ class AuthTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: isActive
-                ? theme.colorScheme.onSurface
-                : theme.colorScheme.onSurface.withOpacity(0.5),
-            fontWeight: FontWeight.w600,
-          ),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: isActive ? Colors.white : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isActive ? AppColors.neutral : Colors.transparent,
         ),
-        const SizedBox(height: 6),
-        Container(
-          height: 2,
-          width: 36,
-          color: isActive ? theme.colorScheme.onSurface : Colors.transparent,
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        label,
+        style: theme.textTheme.labelLarge?.copyWith(
+          color: isActive ? AppColors.dark : AppColors.dark.withOpacity(0.5),
+          fontWeight: FontWeight.w700,
         ),
-      ],
+      ),
     );
   }
 }

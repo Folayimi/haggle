@@ -34,8 +34,8 @@ class DashboardBottomNav extends StatelessWidget {
                     onTap: () => onTap(0),
                   ),
                   DashboardNavItem(
-                    label: 'Search',
-                    icon: Icons.search,
+                    label: 'Market',
+                    icon: Icons.storefront_outlined,
                     isActive: currentIndex == 1,
                     onTap: () => onTap(1),
                   ),

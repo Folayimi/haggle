@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
 import '../../../routes/app_pages.dart';
+import '../../../theme/app_colors.dart';
 import '../../../widgets/auth_divider_label.dart';
 import '../../../widgets/auth_option_button.dart';
 import '../../../widgets/auth_scaffold.dart';
@@ -11,19 +11,27 @@ import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return AuthScaffold(
       title: 'Log in',
-      subtitle: 'Continue with your Haggle ID or pick a quick sign-in.',
+      subtitle: 'Pick up your live deals, seller reminders, and active negotiations without losing momentum.',
+      heroLabel: 'Marketplace access with context intact',
+      heroHighlights: const [
+        'Return to saved deals and reserved live tickets',
+        'Stay close to sellers you already follow',
+        'Jump into active buyer conversations faster',
+      ],
       bottom: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             'New to Haggle?',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
+              color: AppColors.dark.withOpacity(0.7),
             ),
           ),
           TextButton(
@@ -33,34 +41,63 @@ class LoginView extends GetView<LoginController> {
         ],
       ),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surface.withOpacity(0.85),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: theme.dividerColor.withOpacity(0.2)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(26),
+          border: Border.all(color: AppColors.neutral),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Choose a login method',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.onSurface,
+              'Welcome back',
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Use your preferred login method to continue.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppColors.dark.withOpacity(0.66),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
             const AuthTabRow(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
             TextField(
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Phone or email',
                 hintText: 'you@haggle.app',
+                filled: true,
+                fillColor: const Color(0xFFF9F6F1),
+                prefixIcon: const Icon(Icons.person_outline_rounded),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: const BorderSide(color: AppColors.neutral),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: const BorderSide(color: AppColors.primary),
+                ),
               ),
             ),
             const SizedBox(height: 12),
             TextField(
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(
+                labelText: 'Password',
+                filled: true,
+                fillColor: const Color(0xFFF9F6F1),
+                prefixIcon: const Icon(Icons.lock_outline_rounded),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: const BorderSide(color: AppColors.neutral),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: const BorderSide(color: AppColors.primary),
+                ),
+              ),
             ),
             const SizedBox(height: 8),
             Align(
@@ -70,13 +107,14 @@ class LoginView extends GetView<LoginController> {
                 child: const Text('Forgot password?'),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             AuthOptionButton(
               label: 'Log in',
               icon: Icons.lock_open_outlined,
+              isPrimary: true,
               onPressed: () {},
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
             const AuthDividerLabel(text: 'or continue with'),
             const SizedBox(height: 16),
             AuthOptionButton(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../controllers/theme_controller.dart';
+import '../routes/app_pages.dart';
 import '../theme/app_colors.dart';
 import '../modules/dashboard/views/analytics_page.dart';
 
@@ -62,6 +64,14 @@ class DashboardDrawer extends StatelessWidget {
             leading: const Icon(Icons.bookmark_border),
             title: const Text('Saved Deals'),
             onTap: () => Navigator.pop(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.confirmation_num_outlined),
+            title: const Text('Reminders'),
+            onTap: () {
+              Navigator.pop(context);
+              Get.toNamed(Routes.REMINDERS);
+            },
           ),
           ListTile(
             leading: const Icon(Icons.multitrack_audio_outlined),

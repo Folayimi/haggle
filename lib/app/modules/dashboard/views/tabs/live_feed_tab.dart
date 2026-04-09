@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../data/mock_seller_profiles.dart';
 import '../../../../widgets/circle_icon_button.dart';
 import '../../../../widgets/fullscreen_feed_card.dart';
 import '../../../../routes/app_pages.dart';
@@ -12,6 +13,10 @@ class LiveFeedTab extends StatelessWidget {
 
   static void _joinRoom() {
     Get.toNamed(Routes.NEGOTIATION_ROOM, arguments: {'role': 'buyer'});
+  }
+
+  static void _openSellerProfile(SellerProfileData seller) {
+    Get.toNamed(Routes.SELLER_PROFILE, arguments: seller);
   }
 
   @override
@@ -27,9 +32,9 @@ class LiveFeedTab extends StatelessWidget {
         viewers: '12.3k',
         offers: '250',
         saves: '100',
-        userImageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/7/74/Portrait_%28Unsplash%29.jpg',
+        userImageUrl: sellerProfiles[0].avatarUrl,
         onJoin: _joinRoom,
+        onSellerTap: () => _openSellerProfile(sellerProfiles[0]),
       ),
       FullscreenFeedCard(
         title: 'Campfire Speaker Set',
@@ -40,9 +45,9 @@ class LiveFeedTab extends StatelessWidget {
         viewers: '9.1k',
         offers: '180',
         saves: '72',
-        userImageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Portrait_of_a_woman_%28Unsplash%29.jpg/640px-Portrait_of_a_woman_%28Unsplash%29.jpg',
+        userImageUrl: sellerProfiles[1].avatarUrl,
         onJoin: _joinRoom,
+        onSellerTap: () => _openSellerProfile(sellerProfiles[1]),
       ),
       FullscreenFeedCard(
         title: 'Ceramic Brew Kit',
@@ -53,9 +58,9 @@ class LiveFeedTab extends StatelessWidget {
         viewers: '8.4k',
         offers: '96',
         saves: '41',
-        userImageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Portrait_of_a_man_%28Unsplash%29.jpg/640px-Portrait_of_a_man_%28Unsplash%29.jpg',
+        userImageUrl: sellerProfiles[2].avatarUrl,
         onJoin: _joinRoom,
+        onSellerTap: () => _openSellerProfile(sellerProfiles[2]),
       ),
     ];
 

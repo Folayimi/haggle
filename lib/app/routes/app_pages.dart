@@ -10,6 +10,8 @@ import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/negotiation_room/bindings/negotiation_room_binding.dart';
 import '../modules/negotiation_room/views/negotiation_room_view.dart';
+import '../modules/reminders/views/reminders_view.dart';
+import '../modules/seller_profile/views/seller_profile_view.dart';
 
 part 'app_routes.dart';
 
@@ -46,6 +48,14 @@ class AppPages {
       name: _Paths.NEGOTIATION_ROOM,
       page: () => NegotiationRoomView(),
       binding: NegotiationRoomBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELLER_PROFILE,
+      page: () => const SellerProfileView(),
+    ),
+    GetPage(
+      name: _Paths.REMINDERS,
+      page: () => const RemindersView(),
     ),
   ];
 }

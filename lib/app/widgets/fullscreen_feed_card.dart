@@ -15,6 +15,7 @@ class FullscreenFeedCard extends StatelessWidget {
     required this.offers,
     required this.saves,
     this.onJoin,
+    this.onSellerTap,
   });
 
   final String title;
@@ -26,6 +27,7 @@ class FullscreenFeedCard extends StatelessWidget {
   final String offers;
   final String saves;
   final VoidCallback? onJoin;
+  final VoidCallback? onSellerTap;
 
   @override
   Widget build(BuildContext context) {
@@ -82,9 +84,35 @@ class FullscreenFeedCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
-                'by $vendor',
-                style: theme.textTheme.labelMedium?.copyWith(color: Colors.white.withOpacity(0.85)),
+              InkWell(
+                onTap: onSellerTap,
+                borderRadius: BorderRadius.circular(20),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircleAvatar(
+                        radius: 14,
+                        backgroundImage: NetworkImage(userImageUrl),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'by $vendor',
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: Colors.white.withOpacity(0.92),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Icon(
+                        Icons.open_in_new_rounded,
+                        size: 16,
+                        color: Colors.white.withOpacity(0.85),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 10),
               Text(
