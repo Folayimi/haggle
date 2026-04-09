@@ -15,6 +15,7 @@ class NegotiationRoomController extends GetxController {
   final hasShownBuyerHint = false.obs;
   final roomLink = 'https://haggle.app/room/demo'.obs;
   final isFeedFrozen = false.obs;
+  final sellerVideoUrl = ''.obs;
   final hasScreenshot = false.obs;
   final screenshots = <ScreenshotRef>[].obs;
   final messages = <ChatMessage>[].obs;
@@ -129,6 +130,9 @@ class NegotiationRoomController extends GetxController {
     }
     if (args is Map && args['roomLink'] is String) {
       roomLink.value = args['roomLink'] as String;
+    }
+    if (args is Map && args['sellerVideoUrl'] is String) {
+      sellerVideoUrl.value = args['sellerVideoUrl'] as String;
     }
   }
 

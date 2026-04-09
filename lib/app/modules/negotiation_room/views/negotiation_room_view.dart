@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../../theme/app_colors.dart';
 import '../controllers/negotiation_room_controller.dart';
@@ -1372,9 +1373,11 @@ class _BuyerSellerTile extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: Image.network(
-                seller.imageUrl,
-                fit: BoxFit.cover,
+              child: Obx(
+                () => _SellerVideoBackground(
+                  videoUrl: controller.sellerVideoUrl.value,
+                  fallbackImageUrl: seller.imageUrl,
+                ),
               ),
             ),
           Obx(
@@ -1453,6 +1456,96 @@ class _BuyerSellerTile extends StatelessWidget {
           ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _SellerVideoBackground extends StatefulWidget {
+  const _SellerVideoBackground({
+    required this.videoUrl,
+    required this.fallbackImageUrl,
+  });
+
+  final String videoUrl;
+  final String fallbackImageUrl;
+
+  @override
+  State<_SellerVideoBackground> createState() => _SellerVideoBackgroundState();
+}
+
+class _SellerVideoBackgroundState extends State<_SellerVideoBackground> {
+  VideoPlayerController? _controller;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initController(widget.videoUrl);
+  }
+
+  @override
+  void didUpdateWidget(covariant _SellerVideoBackground oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.videoUrl != widget.videoUrl) {
+      _controller?.dispose();
+      _controller = null;
+      _hasError = false;
+      _initController(widget.videoUrl);
+    }
+  }
+
+  void _initController(String url) {
+    if (url.isEmpty) return;
+    final controller = VideoPlayerController.networkUrl(Uri.parse(url))
+      ..setLooping(true)
+      ..setVolume(0);
+    _controller = controller;
+    controller.initialize().then((_) {
+      if (!mounted) return;
+      controller.play();
+      setState(() {});
+    }).catchError((_) {
+      if (!mounted) return;
+      setState(() => _hasError = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = _controller;
+    if (widget.videoUrl.isEmpty || _hasError || controller == null) {
+      return Image.network(widget.fallbackImageUrl, fit: BoxFit.cover);
+    }
+
+    if (!controller.value.isInitialized) {
+      return Container(
+        color: Colors.black,
+        alignment: Alignment.center,
+        child: const SizedBox(
+          height: 28,
+          width: 28,
+          child: CircularProgressIndicator(
+            strokeWidth: 3,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        ),
+      );
+    }
+
+    return FittedBox(
+      fit: BoxFit.cover,
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        width: controller.value.size.width,
+        height: controller.value.size.height,
+        child: VideoPlayer(controller),
       ),
     );
   }
