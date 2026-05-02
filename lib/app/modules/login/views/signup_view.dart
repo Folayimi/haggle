@@ -136,7 +136,9 @@ class SignupView extends StatelessWidget {
               label: 'Create account',
               icon: Icons.person_add_alt_1_outlined,
               isPrimary: true,
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(Routes.LOGIN);
+              },
             ),
             const SizedBox(height: 12),
             Text(

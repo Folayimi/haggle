@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:haggle/app/routes/app_pages.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../../theme/app_colors.dart';
@@ -18,7 +19,8 @@ class LoginView extends GetView<LoginController> {
 
     return AuthScaffold(
       title: 'Log in',
-      subtitle: 'Pick up your live deals, seller reminders, and active negotiations without losing momentum.',
+      subtitle:
+          'Pick up your live deals, seller reminders, and active negotiations without losing momentum.',
       heroLabel: 'Marketplace access with context intact',
       heroHighlights: const [
         'Return to saved deals and reserved live tickets',
@@ -52,7 +54,9 @@ class LoginView extends GetView<LoginController> {
           children: [
             Text(
               'Welcome back',
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
             ),
             const SizedBox(height: 6),
             Text(
@@ -112,7 +116,9 @@ class LoginView extends GetView<LoginController> {
               label: 'Log in',
               icon: Icons.lock_open_outlined,
               isPrimary: true,
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(Routes.LOGIN);
+              },
             ),
             const SizedBox(height: 18),
             const AuthDividerLabel(text: 'or continue with'),

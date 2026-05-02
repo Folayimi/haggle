@@ -46,12 +46,12 @@ String _getInitialRoute() {
     // Check camera permission in background
     // checkCameraPermission();
 
-    return Routes.DASHBOARD;
+    return Routes.LOGIN;
   } else {
     if (isLoggedIn) {
-      return Routes.DASHBOARD;
+      return Routes.LOGIN;
     } else {
-      return Routes.DASHBOARD;
+      return Routes.LOGIN;
     }
   }
 }
